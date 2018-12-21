@@ -2,7 +2,6 @@
 *.class
 
 # config file
-*.properties
 
 # Log file
 *.log
