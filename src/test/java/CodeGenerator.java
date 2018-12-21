@@ -20,9 +20,9 @@ import static com.xuanxuan.csu.core.ProjectConstant.*;
  */
 public class CodeGenerator {
     //JDBC配置，请修改为你项目的实际配置
-    private static final String JDBC_URL = "";
+    private static final String JDBC_URL = "jdbc:mysql://120.79.206.32:3306/mpdb_pl";
     private static final String JDBC_USERNAME = "root";
-    private static final String JDBC_PASSWORD = "123";
+    private static final String JDBC_PASSWORD = "chen981030";
     private static final String JDBC_DIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
 
     private static final String PROJECT_PATH = System.getProperty("user.dir");//项目在硬盘上的基础路径

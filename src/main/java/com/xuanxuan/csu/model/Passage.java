@@ -8,13 +8,14 @@ import javax.persistence.*;
 @Table(name = "passage")
 public class Passage {
     @Id
-    @GeneratedValue(generator = "UUID")
     private String id;
 
+    //公众号文章url
     @Column(name = "url")
-    private String url;
+    private String url = "";
 
+    //后期接入多个平台
     @Column(name = "platform_id")
-    private String platformId;
+    private String platformId = "";
 
 }

@@ -29,6 +29,7 @@ public class CommentServiceImplTest extends Tester {
      */
     @Test
     public void deleteComment() {
+        assertEquals(1, 2);
 
     }
 

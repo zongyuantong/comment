@@ -19,10 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -44,8 +41,13 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
 
     @Override
     public PassageVO getPassageDetailById(String passageId) {
+        //首先判断文章是否存在,不存在此id,则先创建文章字段
         Passage passage = passageMapper.selectByPrimaryKey(passageId);
-        if (passage == null) throw new RuntimeException("文章id错误");
+        if (passage == null) {
+            passage = new Passage();
+            passage.setId(passageId);
+            passageMapper.insert(passage);
+        }
         //文章存在,首先copy必要数据
         PassageVO passageVO = new PassageVO(passage);
         //构造评论list
@@ -89,16 +91,20 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
 
     @Override
     public String genOpenId(String url) {
+        //放入文章url,得到UUID
         Condition condition = new Condition(Passage.class);
         condition.createCriteria().andCondition("url=", url);
-        List list = passageMapper.selectByCondition(condition);
-        if (list == null || list.size() == 0) {
+        List<Passage> list = passageMapper.selectByCondition(condition);
+        if (list.size() == 0) {
             Passage passage = new Passage();
             passage.setUrl(url);
+            passage.setId(UUID.randomUUID().toString());
             passageMapper.insert(passage);
             String id = passageMapper.select(passage).get(0).getId();
             return id;
-        } else throw new ServiceException("此文章已存在,无法生成openId");
+        } else {
+            return list.get(0).getId();
+        }
     }
 
     @Override

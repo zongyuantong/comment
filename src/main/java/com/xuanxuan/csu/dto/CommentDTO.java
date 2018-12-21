@@ -3,8 +3,6 @@ package com.xuanxuan.csu.dto;
 
 import lombok.Data;
 
-import javax.annotation.Nullable;
-import javax.annotation.meta.Exclusive;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 
