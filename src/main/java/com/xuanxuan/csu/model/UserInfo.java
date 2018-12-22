@@ -13,24 +13,24 @@ public class UserInfo {
 
     //设置默认的username为中南大学学生
     @Column(name = "username")
-    private String nickName;
+    private String nickName = "";
 
     @Column(name = "avatar")
-    private String avatarUrl;
+    private String avatarUrl = "";
 
     @Column(name = "gender")
-    private int gender;
+    private int gender = 1;
 
     @Column(name = "country")
-    private String country;
+    private String country = "";
 
     @Column(name = "province")
-    private String province;
+    private String province = "";
 
     @Column(name = "city")
-    private String city;
+    private String city = "";
 
     @Column(name = "language")
-    private String language;
+    private String language = "";
 
 }
