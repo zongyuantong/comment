@@ -18,6 +18,9 @@ public class WeChatUserServiceImplTest extends Tester {
     @Resource
     UserInfoService userInfoService;
 
+    /**
+     * 测试redis操作
+     */
     @Test
     public void testRedis() {
         assertNotNull(redisTemplate);
