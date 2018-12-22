@@ -34,8 +34,12 @@ public class WeChatUserServiceImpl extends AbstractService<UserInfo> implements 
 
     //小程序的app_id
     private static final String appId = "wx94615bd0bc6e1d73";
+//    private static final String appId = "wxf7597e992f6dbaa7";//测试账号
+
     //小程序的secret_key
     private static final String secretKey = "ec948811317899de3436e55099716e42";
+//    private static final String secretKey = "a987879c2ac414c8cb61bf7b4ee96a55";//测试密码
+
     //小程序的grant_type
     private static final String grantType = "authorization_code";
 
