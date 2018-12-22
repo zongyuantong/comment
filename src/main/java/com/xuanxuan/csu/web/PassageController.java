@@ -37,6 +37,7 @@ public class PassageController {
      */
     @ApiOperation(value = "申请文章接入Id")
     @PostMapping("/genOpenId")
+    @LoginRequired
     public Result genOpenId(@RequestParam String url) {
         return ResultGenerator.genSuccessResult(passageService.genOpenId(url));
     }
