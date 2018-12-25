@@ -19,15 +19,6 @@ import java.util.List;
 public interface PassageService extends Service<Passage> {
 
     /**
-     * 根据文章id得到文章详细信息(后期提供开放api)
-     *
-     * @param passageId
-     * @return
-     */
-    public PassageVO getPassageDetailById(String passageId);
-
-
-    /**
      * 根据文章id得到文章的回复内容
      *
      * @param passageId

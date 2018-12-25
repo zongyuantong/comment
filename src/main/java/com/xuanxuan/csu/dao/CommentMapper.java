@@ -6,6 +6,8 @@ import com.xuanxuan.csu.model.CommentDetail;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.util.List;
+
 public interface CommentMapper extends Mapper<Comment> {
 
     /**
@@ -15,4 +17,12 @@ public interface CommentMapper extends Mapper<Comment> {
      * @return
      */
     public CommentDetail selectCommentDetailById(@Param("id") String commentId);
+
+    /**
+     * 通过文章id得到文章的评论列表
+     *
+     * @param passageId
+     * @return
+     */
+    public List<CommentDetail> selectCommentListByPassageId(@Param("id") String passageId);
 }

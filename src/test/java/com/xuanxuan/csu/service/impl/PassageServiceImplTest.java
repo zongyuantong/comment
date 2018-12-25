@@ -35,10 +35,6 @@ public class PassageServiceImplTest extends Tester {
     private UserInfoService userInfoService;
 
 
-    @Test
-    public void getPassageDetailById() {
-    }
-
     /**
      * 通过文章Id得到文章评论(高楼层到低楼层)
      */
@@ -56,6 +52,9 @@ public class PassageServiceImplTest extends Tester {
         }
     }
 
+    /**
+     * 测试生成openId
+     */
     @Test
     public void genOpenId() {
     }
