@@ -24,7 +24,10 @@ public class CommentVO extends AbstractVO {
     private Integer replyNum;//回复数量
     private Integer floor;//楼层
     //一个评论有多个回复
-    private List<ReplyVO> replyList = new ArrayList<>();
+    private List<ReplyVO> replyList;
+
+    public CommentVO() {
+    }
 
     public CommentVO(Comment comment) {
         super();

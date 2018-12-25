@@ -13,6 +13,7 @@ import java.util.Date;
  */
 
 
+@Component
 public class OrdinalDateTranStrategyImpl implements DateTranStrategy {
 
     @Override

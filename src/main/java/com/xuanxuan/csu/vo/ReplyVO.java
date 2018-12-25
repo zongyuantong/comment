@@ -32,4 +32,7 @@ public class ReplyVO extends AbstractVO {
         this.createTime = date2String(reply.getCreateTime());
     }
 
+    public ReplyVO() {
+
+    }
 }

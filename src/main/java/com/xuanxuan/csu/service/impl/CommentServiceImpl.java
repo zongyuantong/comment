@@ -3,14 +3,11 @@ package com.xuanxuan.csu.service.impl;
 import com.xuanxuan.csu.core.ServiceException;
 import com.xuanxuan.csu.dao.CommentMapper;
 import com.xuanxuan.csu.dto.CommentDTO;
-import com.xuanxuan.csu.model.Passage;
-import com.xuanxuan.csu.model.UserInfo;
+import com.xuanxuan.csu.model.*;
 import com.xuanxuan.csu.service.PassageService;
 import com.xuanxuan.csu.util.VoConvertor;
 import com.xuanxuan.csu.vo.CommentVO;
 import com.xuanxuan.csu.vo.ReplyVO;
-import com.xuanxuan.csu.model.Comment;
-import com.xuanxuan.csu.model.Reply;
 import com.xuanxuan.csu.service.CommentService;
 import com.xuanxuan.csu.core.AbstractService;
 import com.xuanxuan.csu.service.ReplyService;
@@ -19,6 +16,7 @@ import com.xuanxuan.csu.util.HotCommentStrategy;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
@@ -34,10 +32,14 @@ import java.util.Optional;
  * Created by PualrDwade on 2018/12/03.
  * @note :有重复代码,考虑用建造者模式,简化CommentDTO对象的构建,提高代码简洁度
  */
-
-@Service
+//@Service
+@Component
 @Transactional
 public class CommentServiceImpl extends AbstractService<Comment> implements CommentService {
+
+    @Resource
+    VoConvertor<CommentDetail, CommentVO> convertor;
+
     @Resource
     private CommentMapper commentMapper;
 
@@ -51,8 +53,8 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
     private PassageService passageService;
 
     //根据传递对象,自动装配数据转换器(将comment转化为commentDTO)
-    @Resource
-    private VoConvertor<Comment, CommentVO> commentVoConvertor;
+//    @Resource
+//    private VoConvertor<Comment, CommentVO> commentVoConvertor;
 
     //得到热门评论的策略类,用户可以修改规则,自动注入不同的子类
     @Resource
@@ -61,11 +63,22 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
 
     @Override
     public CommentVO getCommentDetail(String commentId) {
-        Comment comment = commentMapper.selectByPrimaryKey(commentId);
-        if (comment != null)
-            return commentVoConvertor.conver2Vo(commentMapper.selectByPrimaryKey(commentId));
-        else
-            return null;
+        CommentDetail commentDetail = commentMapper.selectCommentDetailById(commentId);
+        if (commentDetail == null) throw new ServiceException("评论id不存在");
+        CommentVO commentVO = convertor.conver2Vo(commentDetail);
+        //设置用户信息，不适用联表查询是因为后面会考虑单独拆分用户模块
+        UserInfo userInfo = userInfoService.findById(commentDetail.getFromUid());
+        if (userInfo == null) throw new ServiceException("评论所属用户不存在");
+        commentVO.setUsername(userInfo.getNickName());
+        commentVO.setAvatar(userInfo.getAvatarUrl());
+        for (ReplyVO replyVO : commentVO.getReplyList()) {
+            replyVO.setFromUname(userInfoService.findById(replyVO.getFromUid()).getNickName());
+            Reply target = replyService.findById(replyVO.getReplyId());
+            if (target == null) throw new ServiceException("回复目标不存在");
+            replyVO.setToUname(userInfoService.findById(target.getFromUid()).getNickName());
+            replyVO.setToUid(target.getFromUid());
+        }
+        return commentVO;
     }
 
 

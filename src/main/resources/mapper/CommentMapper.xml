@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.xuanxuan.csu.dao.CommentMapper">
+    <!--评论的基本实体-->
     <resultMap id="BaseResultMap" type="com.xuanxuan.csu.model.Comment">
         <!--
           WARNING - @mbg.generated
         -->
-        <id column="id" jdbcType="INTEGER" property="id"/>
+        <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="passage_id" jdbcType="VARCHAR" property="passageId"/>
         <result column="content" jdbcType="VARCHAR" property="content"/>
         <result column="from_uid" jdbcType="VARCHAR" property="fromUid"/>
@@ -14,4 +15,41 @@
         <result column="reply_number" jdbcType="INTEGER" property="replyNum"/>
         <result column="floor" jdbcType="INTEGER" property="floor"/>
     </resultMap>
+
+    <!--回复的实体结果集-->
+    <resultMap id="ReplyResultMap" type="com.xuanxuan.csu.model.Reply">
+        <id column="r_id" jdbcType="VARCHAR" property="id"/>
+        <result column="r_comment_id" jdbcType="VARCHAR" property="commentId"/>
+        <result column="r_reply_id" jdbcType="VARCHAR" property="replyId"/>
+        <result column="r_reply_type" jdbcType="INTEGER" property="replyType"/>
+        <result column="r_content" jdbcType="VARCHAR" property="content"/>
+        <result column="r_from_uid" jdbcType="VARCHAR" property="fromUid"/>
+        <result column="r_create_time" jdbcType="TIMESTAMP" property="createTime"/>
+    </resultMap>
+
+    <!--评论详情的结果集-->
+    <!--基本字段使用继承，简化开发-->
+    <resultMap id="commentDetailResultMap" type="com.xuanxuan.csu.model.CommentDetail" extends="BaseResultMap">
+        <!--回复集合-->
+        <collection property="replyList" ofType="com.xuanxuan.csu.model.Reply" resultMap="ReplyResultMap">
+        </collection>
+    </resultMap>
+
+    <!--注意，这里需要区分id，我把评论id设为r_id别名，不然只会查出一行数据-->
+    <!--高级查询:评论详情+回复一次性查询 join查询-->
+    <!--此处是个巨坑-->
+    <select id="selectCommentDetailById" parameterType="java.lang.String" resultMap="commentDetailResultMap">
+        select c.*,
+       r.id          r_id,
+       r.comment_id  r_comment_id,
+       r.reply_id    r_reply_id,
+       r.reply_type  r_reply_type,
+       r.content     r_content,
+       r.from_uid    r_from_uid,
+       r.create_time r_create_time
+       from comment c
+       left outer join reply r on c.id = r.comment_id
+       where c.id = #{id}
+       order by r.create_time desc;
+    </select>
 </mapper>

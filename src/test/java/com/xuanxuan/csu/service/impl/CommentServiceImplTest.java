@@ -77,14 +77,24 @@ public class CommentServiceImplTest extends Tester {
 
         //设置为空值
         String commentId = null;
-        CommentVO commentVO = commentService.getCommentDetail(commentId);
-        System.out.println(commentVO);
+        try {
+            CommentVO commentVO = commentService.getCommentDetail(commentId);
+            System.out.println(commentVO);
+            throw new RuntimeException("测试未通过,没有正确抛出异常");
+        } catch (ServiceException e) {
+            System.out.println(e.getMessage());
+        }
 
 
         //设置为不存在的值
         commentId = "null";
-        commentVO = commentService.getCommentDetail(commentId);
-        System.out.println(commentVO);
+        try {
+            CommentVO commentVO = commentService.getCommentDetail(commentId);
+            System.out.println(commentVO);
+            throw new RuntimeException("测试未通过,没有正确抛出异常");
+        } catch (ServiceException e) {
+            System.out.println(e.getMessage());
+        }
 
 
     }

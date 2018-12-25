@@ -1,18 +1,15 @@
-package com.xuanxuan.csu.util.impl;
+package com.xuanxuan.csu.util.convertorImp;
 
 
-import com.xuanxuan.csu.configurer.AppConfigurer;
 import com.xuanxuan.csu.dao.ReplyMapper;
 import com.xuanxuan.csu.dao.UserInfoMapper;
 import com.xuanxuan.csu.model.Comment;
 import com.xuanxuan.csu.model.Reply;
 import com.xuanxuan.csu.model.UserInfo;
 import com.xuanxuan.csu.util.VoConvertor;
-import com.xuanxuan.csu.vo.AbstractVO;
 import com.xuanxuan.csu.vo.CommentVO;
 import com.xuanxuan.csu.vo.ReplyVO;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
@@ -51,6 +48,7 @@ public class CommentVoConvertor implements VoConvertor<Comment, CommentVO> {
             commentVO.setReplyList(new ArrayList<>());
             return commentVO;
         }
+        List<ReplyVO> replyVOList = new ArrayList<>();
         //回复不为空,构造回复内容,使用App配置中的常量
         for (Reply reply : replyList) {
             ReplyVO replyVO = new ReplyVO(reply);
@@ -58,8 +56,9 @@ public class CommentVoConvertor implements VoConvertor<Comment, CommentVO> {
             String toUid = replyMapper.selectByPrimaryKey(reply.getId()).getFromUid();
             replyVO.setToUid(toUid);
             replyVO.setToUname(userInfoMapper.selectByPrimaryKey(toUid).getNickName());
-            commentVO.getReplyList().add(replyVO);
+            replyVOList.add(replyVO);
         }
+        commentVO.setReplyList(replyVOList);
         commentVO.setReplyNum(replyList.size());
         return commentVO;
     }
