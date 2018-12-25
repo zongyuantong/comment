@@ -37,6 +37,9 @@ import java.util.Optional;
 @Transactional
 public class CommentServiceImpl extends AbstractService<Comment> implements CommentService {
 
+    /***
+     * 注入do到vo的转换器
+     */
     @Resource
     VoConvertor<CommentDetail, CommentVO> convertor;
 
@@ -52,10 +55,6 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
     @Resource
     private PassageService passageService;
 
-    //根据传递对象,自动装配数据转换器(将comment转化为commentDTO)
-//    @Resource
-//    private VoConvertor<Comment, CommentVO> commentVoConvertor;
-
     //得到热门评论的策略类,用户可以修改规则,自动注入不同的子类
     @Resource
     private HotCommentStrategy hotCommentStrategy;
@@ -66,18 +65,6 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
         CommentDetail commentDetail = commentMapper.selectCommentDetailById(commentId);
         if (commentDetail == null) throw new ServiceException("评论id不存在");
         CommentVO commentVO = convertor.conver2Vo(commentDetail);
-        //设置用户信息，不适用联表查询是因为后面会考虑单独拆分用户模块
-        UserInfo userInfo = userInfoService.findById(commentDetail.getFromUid());
-        if (userInfo == null) throw new ServiceException("评论所属用户不存在");
-        commentVO.setUsername(userInfo.getNickName());
-        commentVO.setAvatar(userInfo.getAvatarUrl());
-        for (ReplyVO replyVO : commentVO.getReplyList()) {
-            replyVO.setFromUname(userInfoService.findById(replyVO.getFromUid()).getNickName());
-            Reply target = replyService.findById(replyVO.getReplyId());
-            if (target == null) throw new ServiceException("回复目标不存在");
-            replyVO.setToUname(userInfoService.findById(target.getFromUid()).getNickName());
-            replyVO.setToUid(target.getFromUid());
-        }
         return commentVO;
     }
 

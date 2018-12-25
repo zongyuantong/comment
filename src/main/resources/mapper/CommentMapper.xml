@@ -40,16 +40,37 @@
     <!--此处是个巨坑-->
     <select id="selectCommentDetailById" parameterType="java.lang.String" resultMap="commentDetailResultMap">
         select c.*,
-       r.id          r_id,
-       r.comment_id  r_comment_id,
-       r.reply_id    r_reply_id,
-       r.reply_type  r_reply_type,
-       r.content     r_content,
-       r.from_uid    r_from_uid,
-       r.create_time r_create_time
-       from comment c
-       left outer join reply r on c.id = r.comment_id
-       where c.id = #{id}
-       order by r.create_time desc;
+            r.id          r_id,
+            r.comment_id  r_comment_id,
+            r.reply_id    r_reply_id,
+            r.reply_type  r_reply_type,
+            r.content     r_content,
+            r.from_uid    r_from_uid,
+            r.create_time r_create_time
+        from comment c
+        left outer join reply r on c.id = r.comment_id
+        where c.id = #{id}
+        order by r.create_time desc;
+    </select>
+
+
+    <!--文章的评论内容,评论内容按照楼层排序，回复内容按照时间排序-->
+    <select id="selectCommentListByPassageId" parameterType="java.lang.String" resultMap="commentDetailResultMap">
+        select c.*,
+        r.id          r_id,
+        r.comment_id  r_comment_id,
+        r.reply_id    r_reply_id,
+        r.reply_type  r_reply_type,
+        r.content     r_content,
+        r.from_uid    r_from_uid,
+        r.create_time r_create_time
+        from comment c
+        left outer join (select *from reply) as r
+                       on c.id = r.comment_id
+        where c.id in (select c2.id
+               from comment c2
+               where c2.passage_id = #{id}
+        )
+        order by c.floor desc,r.create_time;
     </select>
 </mapper>

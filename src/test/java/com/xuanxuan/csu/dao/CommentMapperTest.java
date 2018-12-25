@@ -115,4 +115,20 @@ public class CommentMapperTest extends Tester {
         //不为空，size = 0
         assertEquals(commentDetail1.getReplyList().size(), 0);
     }
+
+
+    /**
+     * 查询文章的评论
+     */
+    @Test
+    public void test2() {
+        String passageId = "aaaaaa";
+        List<CommentDetail> commentDetails = commentMapper.selectCommentListByPassageId(passageId);
+        for (CommentDetail commentDetail : commentDetails) {
+            System.out.println("评论基本信息为：" + commentDetail);
+            for (Reply reply : commentDetail.getReplyList()) {
+                System.out.println("有如下评论：" + reply);
+            }
+        }
+    }
 }
