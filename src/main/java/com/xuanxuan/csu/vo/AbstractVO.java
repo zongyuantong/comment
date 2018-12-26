@@ -3,7 +3,6 @@ package com.xuanxuan.csu.vo;
 import com.xuanxuan.csu.util.DateTranStrategy;
 import com.xuanxuan.csu.util.impl.OrdinalDateTranStrategyImpl;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 

@@ -55,10 +55,6 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
     @Resource
     private PassageService passageService;
 
-    //得到热门评论的策略类,用户可以修改规则,自动注入不同的子类
-    @Resource
-    private HotCommentStrategy hotCommentStrategy;
-
 
     @Override
     public CommentVO getCommentDetail(String commentId) {

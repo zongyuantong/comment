@@ -6,7 +6,6 @@ import com.xuanxuan.csu.dao.CommentMapper;
 import com.xuanxuan.csu.dao.PassageMapper;
 import com.xuanxuan.csu.dto.CommentDTO;
 import com.xuanxuan.csu.dto.RefreshDTO;
-import com.xuanxuan.csu.dto.ReplyDTO;
 import com.xuanxuan.csu.model.Comment;
 import com.xuanxuan.csu.model.CommentDetail;
 import com.xuanxuan.csu.model.Passage;

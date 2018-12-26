@@ -7,7 +7,6 @@ import com.xuanxuan.csu.model.Passage;
 import com.xuanxuan.csu.core.Service;
 import com.xuanxuan.csu.vo.CommentRefreshVO;
 import com.xuanxuan.csu.vo.CommentVO;
-import com.xuanxuan.csu.vo.PassageVO;
 
 import java.util.List;
 
