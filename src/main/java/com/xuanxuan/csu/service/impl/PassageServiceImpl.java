@@ -52,9 +52,15 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
 
     @Override
     public List<CommentVO> getComments(String passageId) {
-        List<CommentDetail> commentDetailList = commentMapper.selectCommentListByPassageId(passageId);
+        //首先得到文章所有评论，为了便于分页
+        Condition condition = new Condition(Comment.class);
+        condition.createCriteria().andCondition("passage_id=", passageId);
+        condition.orderBy("floor").desc();
+        List<Comment> commentList = commentMapper.selectByCondition(condition);
+        //逐一得到评论详情
         List<CommentVO> commentVOList = new ArrayList<>();
-        for (CommentDetail commentDetail : commentDetailList) {
+        for (Comment comment : commentList) {
+            CommentDetail commentDetail = commentMapper.selectCommentDetailById(comment.getId());
             CommentVO commentVO = convertor.conver2Vo(commentDetail);
             commentVOList.add(commentVO);
         }
@@ -86,6 +92,7 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
         int endFloor = refreshDTO.getEndFloor();
         CommentRefreshVO commentRefreshVO = new CommentRefreshVO();
 
+
         //1. 首先创建容器存放最新的评论内容
         List<CommentVO> newComments = new ArrayList<>();
         //查询楼层数比endFloor更大的
@@ -104,7 +111,7 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
         List<CommentVO> refreshComments = new ArrayList<>();
         Condition condition1 = new Condition(Comment.class);
         condition1.createCriteria().andCondition("floor>=", startFloor).andCondition("floor<=", endFloor);
-        condition.orderBy("floor").desc();
+        condition1.orderBy("floor").desc();
         List<Comment> commentList2 = commentService.findByCondition(condition1);
         for (Comment comment : commentList2) {
             refreshComments.add(commentVoConvertor.conver2Vo(comment));

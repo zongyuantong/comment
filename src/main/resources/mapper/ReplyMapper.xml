@@ -12,5 +12,6 @@
         <result column="content" jdbcType="VARCHAR" property="content"/>
         <result column="from_uid" jdbcType="VARCHAR" property="fromUid"/>
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="star_number" jdbcType="INTEGER" property="zanNum"/>
     </resultMap>
 </mapper>

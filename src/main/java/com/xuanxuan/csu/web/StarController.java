@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.List;
 
 /**
@@ -28,9 +29,7 @@ public class StarController {
     @ApiOperation(value = "对评论进行点赞")
     @PostMapping
     @LoginRequired
-    public Result add(@RequestBody StarDTO star, HttpServletRequest request) {
-        String openId = (String) request.getAttribute("openId");
-        star.setUserId(openId);
+    public Result add(@Valid @RequestBody StarDTO star) {
         starService.zan(star);
         return ResultGenerator.genSuccessResult();
     }

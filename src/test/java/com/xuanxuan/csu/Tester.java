@@ -2,6 +2,7 @@ package com.xuanxuan.csu;
 
 
 import com.xuanxuan.csu.Application;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;

@@ -23,6 +23,7 @@ public class ReplyVO extends AbstractVO {
     private String content;//回复内容
     private String createTime;//回复时间
     private String commentId;//所属评论的id
+    private Integer zanNum;//回复的点赞数
 
     //创建属性赋值的方法
     public ReplyVO(Reply reply) {

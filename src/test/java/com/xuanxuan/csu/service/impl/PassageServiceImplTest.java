@@ -65,10 +65,7 @@ public class PassageServiceImplTest extends Tester {
     @Test
     public void getRefreshComments() {
         //首先加载一页数据
-        String passageId = passageService.findAll().get(0).getId();
-        String userId = userInfoService.findAll().get(0).getId();
-
-        List<CommentVO> oldCommentVOList = passageService.getComments(passageId);
+        List<CommentVO> oldCommentVOList = passageService.getComments("test1");
         //打印结果显示
         for (CommentVO commentVO : oldCommentVOList) {
             System.out.println(commentVO);
@@ -76,8 +73,8 @@ public class PassageServiceImplTest extends Tester {
 
         //随后添加一条新的数据
         CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setFromUid(userId);
-        commentDTO.setPassageId(passageId);
+        commentDTO.setFromUid("test2");
+        commentDTO.setPassageId("test1");
         commentDTO.setContent("test update");
         commentService.addNewComment(commentDTO);
 

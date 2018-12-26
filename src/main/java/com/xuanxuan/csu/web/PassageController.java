@@ -63,8 +63,15 @@ public class PassageController {
     }
 
 
+    /**
+     * 得到刷新的数据
+     *
+     * @param passageId
+     * @param refreshDTO
+     * @return
+     */
     @ApiOperation(value = "刷新评论数据")
-    @GetMapping("/{passageId}/comments/new")
+    @PostMapping("/{passageId}/comments/new")
     @LoginRequired
     public Result getNewComments(@PathVariable String passageId, @Valid @RequestBody RefreshDTO refreshDTO) {
         CommentRefreshVO commentRefreshVO = passageService.getRefreshComments(refreshDTO);

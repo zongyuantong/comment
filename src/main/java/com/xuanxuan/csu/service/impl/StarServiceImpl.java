@@ -53,7 +53,6 @@ public class StarServiceImpl extends AbstractService<UserStar> implements StarSe
                 andCondition("user_id=", starDTO.getUserId());
         List<UserStar> userStarList = userStarMapper.selectByCondition(condition);
         //如果已经存在,则抛出异常
-        System.out.println(userStarList);
         if (userStarList != null && userStarList.size() != 0) throw new RuntimeException("已经存在此用户的点赞记录");
         //得到点赞类型
         int type = 0;
@@ -63,7 +62,7 @@ public class StarServiceImpl extends AbstractService<UserStar> implements StarSe
         //不存在点赞.首先添加用户点赞记录
         if (type == 1) {
             Comment comment = commentService.findById(starDTO.getToId());
-            if (comment == null) throw new RuntimeException("评论不存在");
+            if (comment == null) throw new ServiceException("评论不存在");
             //添加一条用户点赞记录
             UserStar userStar = new UserStar();
             BeanUtils.copyProperties(starDTO, userStar);
@@ -73,18 +72,18 @@ public class StarServiceImpl extends AbstractService<UserStar> implements StarSe
             System.out.println("comment 更新成功");
             //然后判断用户是否存在,如果不存在,抛出异常(同时查看事务回滚的机制)
             UserInfo userInfo = userInfoService.findById(starDTO.getUserId());
-            if (userInfo == null) throw new RuntimeException("用户不存在!");
+            if (userInfo == null) throw new ServiceException("用户不存在!");
             //的确发生了回滚
         } else if (type == 2) {
             Reply reply = replyService.findById(starDTO.getToId());
-            if (reply == null) throw new RuntimeException("回复不存在");
+            if (reply == null) throw new ServiceException("回复不存在");
             //由于数据库reply表没有点赞数(不需要经常展示)如果要,就使用条件查询从user_star中查询回复的点赞数
             //只需增加一条记录
             UserStar userStar = new UserStar();
             BeanUtils.copyProperties(starDTO, userStar);
             userStarMapper.insert(userStar);
         } else {
-            throw new RuntimeException("对象类型错误");
+            throw new ServiceException("对象类型错误");
         }
     }
 
@@ -100,7 +99,7 @@ public class StarServiceImpl extends AbstractService<UserStar> implements StarSe
         condition.createCriteria().andCondition("to_id", starDTO.getToId()).
                 andCondition("user_id", starDTO.getUserId());
         List<UserStar> userStarList = userStarMapper.selectByCondition(condition);
-        if (userStarList.size() == 0 || userStarList == null) throw new RuntimeException("不存在用户点赞信息,不能取消");
+        if (userStarList.size() == 0 || userStarList == null) throw new ServiceException("不存在用户点赞信息,不能取消");
         //取消点赞
         System.out.println("userStarList:" + userStarList.size());
         userStarMapper.deleteByIds(userStarList.get(0).getId());

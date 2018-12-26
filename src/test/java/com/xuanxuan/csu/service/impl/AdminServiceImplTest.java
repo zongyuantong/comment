@@ -19,7 +19,10 @@ public class AdminServiceImplTest extends Tester {
 
     @Before
     public void setUp() {
-
+        Admin admin = new Admin();
+        admin.setUsername("root");
+        admin.setPassword("chen981030");
+        adminService.save(admin);
     }
 
     /**
@@ -27,9 +30,10 @@ public class AdminServiceImplTest extends Tester {
      */
     @Test
     public void login() {
+
         Admin admin = new Admin();
-        admin.setPassword("chenzhixuanranxiongxiong");
         admin.setUsername("root");
+        admin.setPassword("chen981030");
         String sessionId = adminService.login(admin);
         assertNotNull(sessionId);
 

@@ -31,4 +31,7 @@ public class Reply {
     @Column(name = "create_time")
     private Date createTime = new Date();
 
+    @Column(name = "star_number")
+    private Integer zanNum = 0;
+
 }

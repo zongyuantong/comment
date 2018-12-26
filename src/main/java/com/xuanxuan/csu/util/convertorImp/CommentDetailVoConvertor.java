@@ -2,8 +2,10 @@ package com.xuanxuan.csu.util.convertorImp;
 
 
 import com.xuanxuan.csu.core.ServiceException;
+import com.xuanxuan.csu.dao.CommentMapper;
 import com.xuanxuan.csu.dao.ReplyMapper;
 import com.xuanxuan.csu.dao.UserInfoMapper;
+import com.xuanxuan.csu.model.Comment;
 import com.xuanxuan.csu.model.CommentDetail;
 import com.xuanxuan.csu.model.Reply;
 import com.xuanxuan.csu.model.UserInfo;
@@ -39,6 +41,10 @@ public class CommentDetailVoConvertor implements VoConvertor<CommentDetail, Comm
     @Resource
     private ReplyMapper replyMapper;
 
+    //注入评论
+    @Resource
+    private CommentMapper commentMapper;
+
     /**
      * 将评论详情的DO转化为视图对象
      *
@@ -47,14 +53,14 @@ public class CommentDetailVoConvertor implements VoConvertor<CommentDetail, Comm
      */
     @Override
     public CommentVO conver2Vo(CommentDetail commentDetail) {
-        System.out.println("评论详情:" + commentDetail);
         //首先将属性进行拷贝
+        if (commentDetail == null) return null;
         CommentVO commentVO = new CommentVO();
         BeanUtils.copyProperties(commentDetail, commentVO);
         commentVO.setCreateTime(dateTranStrategy.conver2Show(commentDetail.getCreateTime()));
         //设置用户信息
         UserInfo userInfo = userInfoMapper.selectByPrimaryKey(commentDetail.getFromUid());
-        if (userInfo == null) throw new ServiceException("评论所属用户不存在");
+        if (userInfo == null) throw new ServiceException("评论" + commentDetail.getId() + "所属用户不存在");
         commentVO.setUsername(userInfo.getNickName());
         commentVO.setAvatar(userInfo.getAvatarUrl());
         //转化回复内容进行转化
@@ -69,10 +75,16 @@ public class CommentDetailVoConvertor implements VoConvertor<CommentDetail, Comm
             replyVO.setCreateTime(dateTranStrategy.conver2Show(reply.getCreateTime()));
             //设置用户信息
             replyVO.setFromUname(userInfoMapper.selectByPrimaryKey(replyVO.getFromUid()).getNickName());
-            Reply target = replyMapper.selectByPrimaryKey(replyVO.getReplyId());
-            if (target == null) throw new ServiceException("回复目标不存在");
-            replyVO.setToUname(userInfoMapper.selectByPrimaryKey(target.getFromUid()).getNickName());
-            replyVO.setToUid(target.getFromUid());
+            //判断到底是回复评论还是回复
+            if (replyVO.getReplyType() == 1) {
+                Comment target = commentMapper.selectByPrimaryKey(replyVO.getReplyId());
+                replyVO.setToUname(userInfoMapper.selectByPrimaryKey(target.getFromUid()).getNickName());
+                replyVO.setToUid(target.getFromUid());
+            } else {
+                Reply target = replyMapper.selectByPrimaryKey(replyVO.getReplyId());
+                replyVO.setToUname(userInfoMapper.selectByPrimaryKey(target.getFromUid()).getNickName());
+                replyVO.setToUid(target.getFromUid());
+            }
             replyVOList.add(replyVO);
         }
         //添加评论列表

@@ -1,6 +1,7 @@
 package com.xuanxuan.csu.service.impl;
 
 import com.xuanxuan.csu.core.ServiceException;
+import com.xuanxuan.csu.dao.CommentMapper;
 import com.xuanxuan.csu.dao.ReplyMapper;
 import com.xuanxuan.csu.dto.ReplyDTO;
 import com.xuanxuan.csu.model.Comment;
@@ -27,7 +28,7 @@ public class ReplyServiceImpl extends AbstractService<Reply> implements ReplySer
     private ReplyMapper replyMapper;
 
     @Resource
-    private CommentService commentService;
+    private CommentMapper commentMapper;
 
     @Override
     public List<Reply> findReplyByCommentId(String commentId) {
@@ -42,7 +43,7 @@ public class ReplyServiceImpl extends AbstractService<Reply> implements ReplySer
         Reply reply = new Reply();
         BeanUtils.copyProperties(replyDTO, reply);
         //判断回复的类型
-        Comment comment = commentService.findById(replyDTO.getReplyId());
+        Comment comment = commentMapper.selectByPrimaryKey(replyDTO.getReplyId());
         if (comment == null) {
             //再判断是否回复了回复
             Reply reply1 = replyMapper.selectByPrimaryKey(replyDTO.getReplyId());
@@ -58,6 +59,9 @@ public class ReplyServiceImpl extends AbstractService<Reply> implements ReplySer
         }
         //持久化
         replyMapper.insert(reply);
+        //同时,对应的评论的回复量要+1
+        comment.setReplyNum(comment.getReplyNum() + 1);
+        commentMapper.updateByPrimaryKeySelective(comment);
     }
 
 }

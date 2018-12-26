@@ -40,24 +40,6 @@ public class CommentServiceImplTest extends Tester {
 
 
     /**
-     * 创建测试数据
-     */
-    @Before
-    public void setUp() {
-        //首先插入用户数据
-        UserInfo userInfo = new UserInfo();
-        userInfo.setId("test");
-        userInfo.setNickName("chenzhixuan");
-        userInfoService.save(userInfo);
-        //插入文章
-        Passage passage = new Passage();
-        passage.setId("test");
-        passage.setPlatformId("test");
-        passage.setUrl("test");
-        passageService.save(passage);
-    }
-
-    /**
      * 得到评论详情
      */
     @Test
@@ -69,11 +51,6 @@ public class CommentServiceImplTest extends Tester {
             System.out.println(commentVO);
         }
 
-        //空list
-        commentList = new ArrayList<>();
-        for (Comment comment : commentList) {
-            //
-        }
 
         //设置为空值
         String commentId = null;
@@ -130,20 +107,21 @@ public class CommentServiceImplTest extends Tester {
 
 
         //进行文章评论
+        int sum = commentService.findAll().size();
         CommentDTO commentDTO1 = new CommentDTO();
         CommentDTO commentDTO2 = new CommentDTO();
-        commentDTO1.setFromUid("test");
-        commentDTO2.setFromUid("test");
-        commentDTO1.setPassageId("test");
-        commentDTO2.setPassageId("test");
+        commentDTO1.setFromUid("test1");
+        commentDTO2.setFromUid("test1");
+        commentDTO1.setPassageId("test1");
+        commentDTO2.setPassageId("test1");
         commentDTO1.setContent("测试评论");
         commentDTO2.setContent("测试评论2");
         commentService.addNewComment(commentDTO1);
         commentService.addNewComment(commentDTO1);
         //得到文章的评论
-        List<CommentVO> commentVOList = passageService.getComments("test");
+        List<CommentVO> commentVOList = passageService.getComments("test1");
         //进行断言
-        assertEquals(2, commentVOList.size());//只有一条评论
+        assertEquals(2 + sum, commentVOList.size());//只有一条评论
         System.out.println(commentVOList.get(0).getFloor() + "楼" + commentVOList.get(1).getFloor() + "楼");
         assertEquals(Optional.of(1 + commentVOList.get(1).getFloor()).get(), commentVOList.get(0).getFloor());
         assertEquals(Optional.of(0).get(), commentVOList.get(0).getReplyNum());
@@ -160,18 +138,21 @@ public class CommentServiceImplTest extends Tester {
      */
     @Test
     public void deleteComment() {
+        //得到当前评论数
+        int sum = passageService.getComments("test1").size();
         //首先进行评论
         CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setContent("test");
-        commentDTO.setPassageId("test");
-        commentDTO.setFromUid("test");
+        commentDTO.setContent("测试添加评论");
+        commentDTO.setPassageId("test1");
+        commentDTO.setFromUid("test2");
         commentService.addNewComment(commentDTO);
         //得到文章评论
-        List<CommentVO> commentVOList = passageService.getComments("test");
-        assertEquals(1, commentVOList.size());
+        List<CommentVO> commentVOList = passageService.getComments("test1");
+        assertEquals(sum + 1, commentVOList.size());
+        //测试删除评论
         commentService.deleteComment(commentVOList.get(0).getId());
-        commentVOList = passageService.getComments("test");
-        assertEquals(0, commentVOList.size());
+        commentVOList = passageService.getComments("test1");
+        assertEquals(sum, commentVOList.size());
 
         //评论Id不存在
         String commentId = "null";
@@ -184,26 +165,17 @@ public class CommentServiceImplTest extends Tester {
         }
 
 
-        //再次进行评论,同时添加回复内容
-        CommentDTO commentDTO2 = new CommentDTO();
-        commentDTO2.setContent("test");
-        commentDTO2.setPassageId("test");
-        commentDTO2.setFromUid("test");
-        commentService.addNewComment(commentDTO2);
-        //得到文章评论
-        List<CommentVO> commentVOList2 = passageService.getComments("test");
-        System.out.println(commentVOList2);
-        //同时对评论进行回复
+        //对评论进行回复
         ReplyDTO replyDTO = new ReplyDTO();
         replyDTO.setContent("测试回复");
-        replyDTO.setFromUid("test");
+        replyDTO.setFromUid("test1");
         //设置回复目标的id
-        replyDTO.setReplyId(commentVOList2.get(0).getId());
+        replyDTO.setReplyId("test1");
         replyService.addNewReply(replyDTO);
         //对评论进行删除
-        commentService.deleteComment(commentVOList2.get(0).getId());
+        commentService.deleteComment("test1");
         //得到文章回复
-        List<Reply> reply = replyService.findReplyByCommentId("test");
+        List<Reply> reply = replyService.findReplyByCommentId("test1");
         assertEquals(0, reply.size());
 
     }
@@ -216,20 +188,19 @@ public class CommentServiceImplTest extends Tester {
         //首先对文章进行评论
         //首先进行评论
         CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setContent("test");
-        commentDTO.setPassageId("test");
-        commentDTO.setFromUid("test");
+        commentDTO.setContent("测试更新");
+        commentDTO.setPassageId("test1");
+        commentDTO.setFromUid("test1");
         commentService.addNewComment(commentDTO);
         //得到评论id
-        List<CommentVO> commentDTOList = passageService.getComments("test");
+        List<CommentVO> commentDTOList = passageService.getComments("test1");
         String commentId = commentDTOList.get(0).getId();
         //进行评论更新
-        commentDTO.setContent("test2");
-        System.out.println(commentDTO);
+        commentDTO.setContent("测试更新new");
         commentService.updateComment(commentDTO, commentId);
         Comment comment = commentService.findById(commentId);
         //进行断言
-        assertEquals("test2", comment.getContent());
+        assertEquals("测试更新new", comment.getContent());
 
         //特殊情况测试
         commentDTO.setFromUid("null");
