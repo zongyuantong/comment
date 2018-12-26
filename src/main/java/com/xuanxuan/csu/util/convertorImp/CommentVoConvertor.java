@@ -1,6 +1,7 @@
 package com.xuanxuan.csu.util.convertorImp;
 
 
+import com.xuanxuan.csu.configurer.AppConfigurer;
 import com.xuanxuan.csu.dao.ReplyMapper;
 import com.xuanxuan.csu.dao.UserInfoMapper;
 import com.xuanxuan.csu.model.Comment;
@@ -48,11 +49,14 @@ public class CommentVoConvertor implements VoConvertor<Comment, CommentVO> {
             commentVO.setReplyList(new ArrayList<>());
             return commentVO;
         }
+        //项目配置，固定评论数量
+        replyList = replyList.subList(0, Math.min(AppConfigurer.COMMENT_REPLAY_NUMBER, replyList.size()));
         List<ReplyVO> replyVOList = new ArrayList<>();
         //回复不为空,构造回复内容,使用App配置中的常量
         for (Reply reply : replyList) {
             ReplyVO replyVO = new ReplyVO(reply);
-            replyVO.setFromUname(userInfoMapper.selectByPrimaryKey(reply.getFromUid()).getAvatarUrl());
+            UserInfo rUserInfo = userInfoMapper.selectByPrimaryKey(reply.getFromUid());
+            replyVO.setFromUname(rUserInfo.getAvatarUrl());
             String toUid = replyMapper.selectByPrimaryKey(reply.getId()).getFromUid();
             replyVO.setToUid(toUid);
             replyVO.setToUname(userInfoMapper.selectByPrimaryKey(toUid).getNickName());

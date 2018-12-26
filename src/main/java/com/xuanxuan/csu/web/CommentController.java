@@ -85,7 +85,7 @@ public class CommentController {
      * @return
      * @apiNote 查看评论的详情信息
      */
-    @ApiOperation(nickname = "请求得到评论的详情数据", value = "查看评论论详情信息")
+    @ApiOperation(value = "查看评论详情信息")
     @GetMapping("/{commentId}/replys")
     @LoginRequired
     public Result CommentDetail(@PathVariable String commentId) {

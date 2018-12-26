@@ -1,5 +1,6 @@
 package com.xuanxuan.csu.service.impl;
 
+import com.xuanxuan.csu.configurer.AppConfigurer;
 import com.xuanxuan.csu.core.ServiceException;
 import com.xuanxuan.csu.dao.CommentMapper;
 import com.xuanxuan.csu.dao.PassageMapper;
@@ -51,19 +52,14 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
     private UserInfoService userInfoService;
 
     @Override
-    public List<CommentVO> getComments(String passageId) {
-        //首先得到文章所有评论，为了便于分页
-        Condition condition = new Condition(Comment.class);
-        condition.createCriteria().andCondition("passage_id=", passageId);
-        condition.orderBy("floor").desc();
-        List<Comment> commentList = commentMapper.selectByCondition(condition);
-        //逐一得到评论详情
+    public List<CommentVO> getComments(String passageId, int page) {
+        List<CommentDetail> commentDetailList = commentMapper.selectCommentListByPassageId(passageId, page, AppConfigurer.COMMENT_PAGE_SIZE);
         List<CommentVO> commentVOList = new ArrayList<>();
-        for (Comment comment : commentList) {
-            CommentDetail commentDetail = commentMapper.selectCommentDetailById(comment.getId());
-            CommentVO commentVO = convertor.conver2Vo(commentDetail);
-            commentVOList.add(commentVO);
-        }
+        commentDetailList.forEach(commentDetail -> {
+            commentDetail.setReplyList(commentDetail.getReplyList().
+                    subList(0, Math.min(AppConfigurer.COMMENT_REPLAY_NUMBER, commentDetail.getReplyList().size())));
+            commentVOList.add(convertor.conver2Vo(commentDetail));
+        });
         return commentVOList;
     }
 
@@ -88,36 +84,40 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
 
     @Override
     public CommentRefreshVO getRefreshComments(RefreshDTO refreshDTO) {
+        Passage passage = passageMapper.selectByPrimaryKey(refreshDTO.getPassageId());
+        if (passage == null) throw new ServiceException("文章id不存在");
         int startFloor = refreshDTO.getStartFloor();
         int endFloor = refreshDTO.getEndFloor();
+        //创建容器存储数据
         CommentRefreshVO commentRefreshVO = new CommentRefreshVO();
-
-
         //1. 首先创建容器存放最新的评论内容
         List<CommentVO> newComments = new ArrayList<>();
         //查询楼层数比endFloor更大的
         Condition condition = new Condition(Comment.class);
-        condition.createCriteria().andCondition("floor>", endFloor);
+        condition.createCriteria()
+                .andCondition("floor>", endFloor)
+                .andCondition("passage_id=", refreshDTO.getPassageId());
         condition.orderBy("floor").desc();//按照楼层数反序排序
         List<Comment> commentList = commentService.findByCondition(condition);
-        //转化为VO
-        for (Comment comment : commentList) {
+        commentList.forEach(comment -> {
             newComments.add(commentVoConvertor.conver2Vo(comment));
-        }
+        });
         commentRefreshVO.setAddNum(commentList.size());
         commentRefreshVO.setNewComments(newComments);
 
-        //2. 刷新已经加载过的评论(start to end)
+        //2. 重新加载刷新已经加载过的评论(start to end)
         List<CommentVO> refreshComments = new ArrayList<>();
-        Condition condition1 = new Condition(Comment.class);
-        condition1.createCriteria().andCondition("floor>=", startFloor).andCondition("floor<=", endFloor);
-        condition1.orderBy("floor").desc();
-        List<Comment> commentList2 = commentService.findByCondition(condition1);
+        Condition condition2 = new Condition(Comment.class);
+        condition2.createCriteria()
+                .andCondition("floor>=", startFloor)
+                .andCondition("floor<=", endFloor)
+                .andCondition("passage_id=", refreshDTO.getPassageId());
+        condition2.orderBy("floor").desc();
+        List<Comment> commentList2 = commentService.findByCondition(condition2);
         for (Comment comment : commentList2) {
             refreshComments.add(commentVoConvertor.conver2Vo(comment));
         }
         commentRefreshVO.setRefreshComments(refreshComments);
-
         return commentRefreshVO;
 
     }

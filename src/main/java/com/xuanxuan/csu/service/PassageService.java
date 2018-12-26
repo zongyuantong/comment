@@ -22,9 +22,10 @@ public interface PassageService extends Service<Passage> {
      * 根据文章id得到文章的回复内容
      *
      * @param passageId
+     * @param page      分页的页数
      * @return
      */
-    public List<CommentVO> getComments(String passageId);
+    public List<CommentVO> getComments(String passageId, int page);
 
 
     /**

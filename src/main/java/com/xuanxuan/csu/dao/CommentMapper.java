@@ -17,4 +17,15 @@ public interface CommentMapper extends Mapper<Comment> {
      * @return
      */
     public CommentDetail selectCommentDetailById(@Param("id") String commentId);
+
+
+    /**
+     * 通过文章id查询所有评论信息
+     *
+     * @param passageId
+     * @return
+     */
+    public List<CommentDetail> selectCommentListByPassageId(@Param("id") String passageId,
+                                                            @Param("page") int page,
+                                                            @Param("size") int size);
 }

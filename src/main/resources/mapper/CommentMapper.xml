@@ -54,4 +54,22 @@
         where c.id = #{id}
         order by r.create_time;
     </select>
+
+    <!--高级查询，文章的评论回复详情-->
+    <select id="selectCommentListByPassageId" resultMap="commentDetailResultMap">
+        select c.*,
+               r.id          r_id,
+               r.comment_id  r_comment_id,
+               r.reply_id    r_reply_id,
+               r.reply_type  r_reply_type,
+               r.content     r_content,
+               r.from_uid    r_from_uid,
+               r.create_time r_create_time,
+               r.star_number r_star_number
+        from (select * from comment order by floor desc limit #{page},#{size}) as c
+               left outer join reply as r
+                               on c.id = r.comment_id
+        where c.passage_id = #{id}
+        order by c.floor desc, r.create_time;
+    </select>
 </mapper>

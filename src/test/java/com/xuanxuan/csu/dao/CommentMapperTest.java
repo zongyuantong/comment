@@ -40,7 +40,7 @@ public class CommentMapperTest extends Tester {
      * 查询评论详情
      */
     @Test
-    public void selectCommentDetailById() {
+    public void test1() {
         String commentId = "test1";
         CommentDetail commentDetail = commentMapper.selectCommentDetailById(commentId);
         System.out.println(commentDetail);
@@ -64,5 +64,34 @@ public class CommentMapperTest extends Tester {
         assertNotNull(commentDetail1.getReplyList());
         //不为空，size = 0
         assertEquals(commentDetail1.getReplyList().size(), 0);
+    }
+
+
+    /**
+     * 测试文章的评论回复查询
+     */
+    @Test
+    public void test2() {
+        List<CommentDetail> commentDetailList = commentMapper.selectCommentListByPassageId("null", 0, 10);
+        assertEquals(0, commentDetailList.size());
+    }
+
+    @Test
+    public void test3() {
+        List<CommentDetail> commentDetailList = commentMapper.selectCommentListByPassageId("test1", 2, 0);
+        for (CommentDetail commentDetail : commentDetailList) {
+            System.out.println(commentDetail);
+        }
+    }
+
+    @Test
+    public void test4() {
+        for (int i = 0; i < 10; ++i) {
+            List<CommentDetail> commentDetailList = commentMapper.selectCommentListByPassageId("test1", i, 1);
+            for (CommentDetail commentDetail : commentDetailList) {
+                System.out.println("第" + i + "页数据：" + commentDetail);
+            }
+        }
+
     }
 }

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 /**
@@ -46,20 +47,22 @@ public class PassageController {
     /**
      * @return
      * @apiNote 页面需要评论数据接口
-     * @note 默认10条数据
+     * @note 默认10条数据, 默认得到第一页数据
      * 请求此接口需要传入文章id,通过数据库查询得到评论与回复数据
      */
     @ApiOperation(value = "得到文章的详细评论信息")
     @GetMapping("/{passageId}/comments")
     @LoginRequired
-    public Result getComments(@RequestParam(defaultValue = "0") Integer page,
+    public Result getComments(@RequestParam(defaultValue = "1") Integer page,
                               @PathVariable String passageId) {
-        //设置为工程的配置
-        int size = AppConfigurer.COMMENT_PAGE_SIZE;
-        PageHelper.startPage(page, size);
-        List<CommentVO> list = passageService.getComments(passageId);
-        PageInfo pageInfo = new PageInfo(list);
-        return ResultGenerator.genSuccessResult(pageInfo);
+        if (page < 1) {
+            //默认查询第一页
+            page = 1;
+        }
+        page -= 1;
+        page *= AppConfigurer.COMMENT_PAGE_SIZE;
+        List<CommentVO> list = passageService.getComments(passageId, page);
+        return ResultGenerator.genSuccessResult(list);
     }
 
 
@@ -71,9 +74,9 @@ public class PassageController {
      * @return
      */
     @ApiOperation(value = "刷新评论数据")
-    @PostMapping("/{passageId}/comments/new")
+    @PostMapping("/comments/refresh")
     @LoginRequired
-    public Result getNewComments(@PathVariable String passageId, @Valid @RequestBody RefreshDTO refreshDTO) {
+    public Result getNewComments(@Valid @RequestBody RefreshDTO refreshDTO) {
         CommentRefreshVO commentRefreshVO = passageService.getRefreshComments(refreshDTO);
         return ResultGenerator.genSuccessResult(commentRefreshVO);
     }

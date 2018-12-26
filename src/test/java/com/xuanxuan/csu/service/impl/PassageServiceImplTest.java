@@ -44,7 +44,7 @@ public class PassageServiceImplTest extends Tester {
         List<Passage> passages = passageService.findAll();
         //循环得到所有文章的所有评论
         for (Passage passage : passages) {
-            List<CommentVO> commentVOList = passageService.getComments(passage.getId());
+            List<CommentVO> commentVOList = passageService.getComments(passage.getId(), 1);
             //打印输出
             for (CommentVO commentVO : commentVOList) {
                 System.out.println(commentVO);
@@ -65,7 +65,7 @@ public class PassageServiceImplTest extends Tester {
     @Test
     public void getRefreshComments() {
         //首先加载一页数据
-        List<CommentVO> oldCommentVOList = passageService.getComments("test1");
+        List<CommentVO> oldCommentVOList = passageService.getComments("test1", 1);
         //打印结果显示
         for (CommentVO commentVO : oldCommentVOList) {
             System.out.println(commentVO);
@@ -81,6 +81,7 @@ public class PassageServiceImplTest extends Tester {
 
         //查看更新情况
         RefreshDTO refreshDTO = new RefreshDTO();
+        refreshDTO.setPassageId("test1");
         refreshDTO.setEndFloor(oldCommentVOList.get(0).getFloor());
         refreshDTO.setStartFloor(oldCommentVOList.get(oldCommentVOList.size() - 1).getFloor());
         CommentRefreshVO commentRefreshVO = passageService.getRefreshComments(refreshDTO);
