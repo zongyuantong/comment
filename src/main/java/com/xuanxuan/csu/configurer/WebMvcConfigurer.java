@@ -2,9 +2,7 @@ package com.xuanxuan.csu.configurer;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Resource;
@@ -13,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
@@ -20,10 +19,8 @@ import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.xuanxuan.csu.core.Result;
 import com.xuanxuan.csu.core.ResultCode;
 import com.xuanxuan.csu.core.ServiceException;
-import com.xuanxuan.csu.interceptor.LoginInterceptor;
-import com.xuanxuan.csu.interceptor.TokenInterceptor;
-import org.apache.commons.codec.digest.DigestUtils;
-import org.apache.commons.lang3.StringUtils;
+import com.xuanxuan.csu.configurer.interceptor.LoginInterceptor;
+import com.xuanxuan.csu.configurer.interceptor.TokenInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +37,6 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 /**
  * @author PualrDwade
@@ -50,7 +46,7 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
 
     /**
-     * 加载redis
+     * 加载redis操作类
      */
     @Resource
     RedisTemplate redisTemplate;
@@ -65,7 +61,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
         FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
         FastJsonConfig config = new FastJsonConfig();
         config.setSerializerFeatures(SerializerFeature.WriteMapNullValue);//保留空的字段
-        //SerializerFeature.WriteNullStringAsEmpty,//String null -> ""
+        //SerializerFeature.WriteNullStringAsEmpty, //String null -> ""
         //SerializerFeature.WriteNullNumberAsZero//Number null -> 0
         // 按需配置，更多参考FastJson文档哈
         converter.setFastJsonConfig(config);
@@ -125,9 +121,9 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         if (!"dev".equals(env)) { //开发环境忽略签名认证
             //1. 添加登陆验证拦截器
-            registry.addInterceptor(new LoginInterceptor()).addPathPatterns("/**");
+            registry.addInterceptor(new LoginInterceptor());
             // 2. 添加jwt验证拦截器
-            registry.addInterceptor(new TokenInterceptor()).addPathPatterns("/**");
+            registry.addInterceptor(new TokenInterceptor());
         }
     }
 

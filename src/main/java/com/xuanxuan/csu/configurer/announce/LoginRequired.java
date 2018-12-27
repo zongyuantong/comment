@@ -1,4 +1,4 @@
-package com.xuanxuan.csu.announce;
+package com.xuanxuan.csu.configurer.announce;
 
 
 import java.lang.annotation.ElementType;

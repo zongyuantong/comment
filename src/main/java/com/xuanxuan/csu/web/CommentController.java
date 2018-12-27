@@ -1,26 +1,15 @@
 package com.xuanxuan.csu.web;
 
-import com.xuanxuan.csu.announce.LoginRequired;
+import com.xuanxuan.csu.configurer.announce.LoginRequired;
 import com.xuanxuan.csu.core.Result;
 import com.xuanxuan.csu.core.ResultGenerator;
-import com.xuanxuan.csu.core.ServiceException;
 import com.xuanxuan.csu.dto.CommentDTO;
-import com.xuanxuan.csu.model.Comment;
 import com.xuanxuan.csu.service.CommentService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.xuanxuan.csu.vo.CommentVO;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * Created by PualrDwade on 2018/12/03.
@@ -59,7 +48,7 @@ public class CommentController {
     @ApiOperation(value = "更新评论内容")
     @PutMapping("/{commentId}")
     @LoginRequired
-    public Result updateComment(@RequestBody CommentDTO commentDTO, @PathVariable String commentId) {
+    public Result updateComment(@Valid @RequestBody CommentDTO commentDTO, @PathVariable String commentId) {
         commentService.updateComment(commentDTO, commentId);
         return ResultGenerator.genSuccessResult();
     }
@@ -87,7 +76,6 @@ public class CommentController {
      */
     @ApiOperation(value = "查看评论详情信息")
     @GetMapping("/{commentId}/replys")
-    @LoginRequired
     public Result CommentDetail(@PathVariable String commentId) {
         return ResultGenerator.genSuccessResult(commentService.getCommentDetail(commentId));
     }

@@ -1,23 +1,18 @@
 package com.xuanxuan.csu.web;
 
-import com.xuanxuan.csu.announce.LoginRequired;
+import com.xuanxuan.csu.configurer.announce.LoginRequired;
 import com.xuanxuan.csu.configurer.AppConfigurer;
 import com.xuanxuan.csu.core.Result;
 import com.xuanxuan.csu.core.ResultGenerator;
 import com.xuanxuan.csu.dto.RefreshDTO;
-import com.xuanxuan.csu.model.Passage;
 import com.xuanxuan.csu.service.PassageService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.xuanxuan.csu.vo.CommentRefreshVO;
 import com.xuanxuan.csu.vo.CommentVO;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 /**
@@ -31,7 +26,7 @@ public class PassageController {
 
 
     /**
-     * 生成文章的id
+     * 生成文章的id,需要登陆
      *
      * @param url
      * @return
@@ -52,7 +47,6 @@ public class PassageController {
      */
     @ApiOperation(value = "得到文章的详细评论信息")
     @GetMapping("/{passageId}/comments")
-    @LoginRequired
     public Result getComments(@RequestParam(defaultValue = "1") Integer page,
                               @PathVariable String passageId) {
         if (page < 1) {
@@ -75,7 +69,6 @@ public class PassageController {
      */
     @ApiOperation(value = "刷新评论数据")
     @PostMapping("/comments/refresh")
-    @LoginRequired
     public Result getNewComments(@Valid @RequestBody RefreshDTO refreshDTO) {
         CommentRefreshVO commentRefreshVO = passageService.getRefreshComments(refreshDTO);
         return ResultGenerator.genSuccessResult(commentRefreshVO);

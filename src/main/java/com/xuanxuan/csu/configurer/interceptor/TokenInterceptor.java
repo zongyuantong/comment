@@ -1,7 +1,6 @@
-package com.xuanxuan.csu.interceptor;
+package com.xuanxuan.csu.configurer.interceptor;
 
 
-import org.springframework.web.servlet.HandlerAdapter;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;

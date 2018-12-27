@@ -1,6 +1,6 @@
 package com.xuanxuan.csu.web;
 
-import com.xuanxuan.csu.announce.LoginRequired;
+import com.xuanxuan.csu.configurer.announce.LoginRequired;
 import com.xuanxuan.csu.core.Result;
 import com.xuanxuan.csu.core.ResultGenerator;
 import com.xuanxuan.csu.dto.UserDTO;
@@ -9,7 +9,6 @@ import com.xuanxuan.csu.service.UserInfoService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -63,7 +62,6 @@ public class UserController {
      */
     @GetMapping("/{id}")
     @ApiOperation(value = "得到用户详细信息")
-    @LoginRequired
     public Result detail(@PathVariable String id) {
         UserInfo userInfo = userInfoService.findById(id);
         return ResultGenerator.genSuccessResult(userInfo);
@@ -79,7 +77,6 @@ public class UserController {
      */
     @ApiOperation(value = "得到所有用户信息")
     @GetMapping
-    @LoginRequired
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         PageHelper.startPage(page, size);
         List<UserInfo> list = userInfoService.findAll();

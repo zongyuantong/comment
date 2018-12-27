@@ -1,21 +1,16 @@
 package com.xuanxuan.csu.web;
 
-import com.xuanxuan.csu.announce.LoginRequired;
+import com.xuanxuan.csu.configurer.announce.LoginRequired;
 import com.xuanxuan.csu.core.Result;
 import com.xuanxuan.csu.core.ResultGenerator;
 import com.xuanxuan.csu.dto.StarDTO;
-import com.xuanxuan.csu.model.UserStar;
 import com.xuanxuan.csu.service.StarService;
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.List;
 
 /**
  * Created by PualrDwade on 2018/12/03.

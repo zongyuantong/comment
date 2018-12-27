@@ -1,8 +1,8 @@
-package com.xuanxuan.csu.interceptor;
+package com.xuanxuan.csu.configurer.interceptor;
 
 
 import com.alibaba.fastjson.JSON;
-import com.xuanxuan.csu.announce.LoginRequired;
+import com.xuanxuan.csu.configurer.announce.LoginRequired;
 import com.xuanxuan.csu.configurer.AppConfigurer;
 import com.xuanxuan.csu.configurer.WebMvcConfigurer;
 import com.xuanxuan.csu.core.Result;
