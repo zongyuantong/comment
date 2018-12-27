@@ -13,7 +13,7 @@ import java.util.List;
  */
 
 @Data
-public class CommentVO extends AbstractVO {
+public class CommentVO {
     //根据表信息构造评论的字段内容
     private String id;//评论的id
     private String avatar;//评论用户头像url
@@ -25,14 +25,4 @@ public class CommentVO extends AbstractVO {
     private Integer floor;//楼层
     //一个评论有多个回复
     private List<ReplyVO> replyList;
-
-    public CommentVO() {
-    }
-
-    public CommentVO(Comment comment) {
-        super();
-        BeanUtils.copyProperties(comment, this);
-        //将时间转化为需要的字符串格式
-        this.createTime = date2String(comment.getCreateTime());
-    }
 }

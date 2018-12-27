@@ -1,10 +1,8 @@
 package com.xuanxuan.csu.dto;
 
 
-import com.xuanxuan.csu.vo.AbstractVO;
 import lombok.Data;
 
-import javax.annotation.CheckReturnValue;
 import javax.validation.constraints.NotNull;
 
 /**

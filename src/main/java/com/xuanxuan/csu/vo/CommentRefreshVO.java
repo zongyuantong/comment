@@ -12,10 +12,10 @@ import java.util.List;
 
 @Data
 public class CommentRefreshVO {
-    //最新的值
-    private List<CommentVO> newComments;
     //新增评论数:
     private int addNum;
+    //最新的值
+    private List<CommentVO> newComments;
     //刷新的值
     private List<CommentVO> refreshComments;
 }

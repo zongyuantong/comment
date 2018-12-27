@@ -82,29 +82,6 @@ public class CommentServiceImplTest extends Tester {
      */
     @Test
     public void addNewComment() {
-        //1. 文章为null
-        CommentDTO commentDTO = new CommentDTO();
-        commentDTO.setContent("test");
-        commentDTO.setPassageId("null");
-        commentDTO.setFromUid("test");
-        try {
-            commentService.addNewComment(commentDTO);
-            throw new RuntimeException("测试未通过,没有正确抛出异常");
-        } catch (ServiceException e) {
-            System.out.println(e.getMessage());
-        }
-
-
-        //2.userinfo为null
-        commentDTO.setFromUid("null");
-        commentDTO.setPassageId("test");
-        try {
-            commentService.addNewComment(commentDTO);
-            throw new RuntimeException("测试未通过,没有正确抛出异常");
-        } catch (ServiceException e) {
-            System.out.println(e.getMessage());
-        }
-
 
         //进行文章评论
         int sum = commentService.findAll().size();
@@ -168,6 +145,7 @@ public class CommentServiceImplTest extends Tester {
         ReplyDTO replyDTO = new ReplyDTO();
         replyDTO.setContent("测试回复");
         replyDTO.setFromUid("test1");
+        replyDTO.setReplyType(1);
         //设置回复目标的id
         replyDTO.setReplyId("test1");
         replyService.addNewReply(replyDTO);

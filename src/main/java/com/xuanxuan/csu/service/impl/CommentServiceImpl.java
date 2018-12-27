@@ -2,6 +2,8 @@ package com.xuanxuan.csu.service.impl;
 
 import com.xuanxuan.csu.core.ServiceException;
 import com.xuanxuan.csu.dao.CommentMapper;
+import com.xuanxuan.csu.dao.PassageMapper;
+import com.xuanxuan.csu.dao.ReplyMapper;
 import com.xuanxuan.csu.dto.CommentDTO;
 import com.xuanxuan.csu.model.*;
 import com.xuanxuan.csu.service.PassageService;
@@ -47,13 +49,13 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
     private CommentMapper commentMapper;
 
     @Resource
-    private ReplyService replyService;
+    private ReplyMapper replyMapper;
 
     @Resource
     private UserInfoService userInfoService;
 
     @Resource
-    private PassageService passageService;
+    private PassageMapper passageMapper;
 
 
     @Override
@@ -70,19 +72,12 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
         //首先转化为model对象
         Comment comment = new Comment();
         BeanUtils.copyProperties(commentDTO, comment);
-        //进行必要的判断
-        //1.首先判断对应的id是否存在
-        Passage passage = passageService.findById(commentDTO.getPassageId());
-        if (passage == null) throw new ServiceException("文章id错误");
-        //2.随后判断用户id是否有效
-        UserInfo userInfo = userInfoService.findById(commentDTO.getFromUid());
-        if (userInfo == null) throw new ServiceException("用户id错误");
         //得到评论的楼层数
         Condition condition = new Condition(Comment.class);
         condition.createCriteria().andCondition("passage_id=", commentDTO.getPassageId());
         condition.orderBy("floor").desc();//最大楼层排序在最上面
         List<Comment> comments = commentMapper.selectByCondition(condition);
-        if (comments.size() != 0 && comments != null) {
+        if (comments.size() != 0) {
             comment.setFloor(comments.get(0).getFloor() + 1);
         } else {
             //从1楼开始
@@ -96,12 +91,9 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
     public void deleteComment(String commentId) {
         Comment comment = commentMapper.selectByPrimaryKey(commentId);
         if (comment == null) throw new ServiceException("评论id错误");
-        //首先删除评论的所有回复
-        List<Reply> replyList = replyService.findReplyByCommentId(commentId);
-        for (Reply reply : replyList) {
-            replyService.deleteById(reply.getId());
-        }
-        //随后删除评论
+        Condition condition = new Condition(Reply.class);
+        condition.createCriteria().andCondition("comment_id=", commentId);
+        replyMapper.deleteByCondition(condition);
         commentMapper.deleteByPrimaryKey(commentId);
 
     }

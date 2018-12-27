@@ -1,7 +1,9 @@
 package com.xuanxuan.csu.dao;
 
 import com.xuanxuan.csu.Tester;
+import com.xuanxuan.csu.core.ConditionMap;
 import com.xuanxuan.csu.dto.CommentDTO;
+import com.xuanxuan.csu.dto.RefreshDTO;
 import com.xuanxuan.csu.dto.ReplyDTO;
 import com.xuanxuan.csu.model.*;
 import com.xuanxuan.csu.service.CommentService;
@@ -92,6 +94,32 @@ public class CommentMapperTest extends Tester {
                 System.out.println("第" + i + "页数据：" + commentDetail);
             }
         }
+
+    }
+
+
+    /**
+     * 测试条件查询评论
+     */
+    @Test
+    public void test5() {
+        //构造条件
+        RefreshDTO refreshDTO = new RefreshDTO();
+        refreshDTO.setPassageId("test1");
+        refreshDTO.setEndFloor(4);
+        refreshDTO.setStartFloor(1);
+
+        ConditionMap conditionMap = new ConditionMap(refreshDTO);
+        System.out.println("条件为" + conditionMap);
+
+        //进行条件查询
+        conditionMap.removeAll();
+        conditionMap.addCondition("passageId", "test1");
+        conditionMap.addCondition("endFloor", 4);
+
+        List<CommentDetail> commentDetailList = commentMapper.selectCommentListByCondition(conditionMap.getConditionMap());
+
+        System.out.println(commentDetailList);
 
     }
 }

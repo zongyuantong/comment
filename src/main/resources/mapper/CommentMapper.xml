@@ -72,4 +72,33 @@
         where c.passage_id = #{id}
         order by c.floor desc, r.create_time;
     </select>
+
+    <!--高级查询，通过condition条件拼接查询-->
+    <select id="selectCommentListByCondition" resultMap="commentDetailResultMap"
+            parameterType="Map">
+        select c.*,
+        r.id r_id,
+        r.comment_id r_comment_id,
+        r.reply_id r_reply_id,
+        r.reply_type r_reply_type,
+        r.content r_content,
+        r.from_uid r_from_uid,
+        r.create_time r_create_time,
+        r.star_number r_star_number
+        from (select * from comment order by floor desc) as c
+        left outer join reply as r
+        on c.id = r.comment_id
+        <where>
+            <if test="passageId!=null">
+                and c.passage_id = #{passageId}
+            </if>
+            <if test="endFloor!=null">
+                and c.floor > #{endFloor}
+            </if>
+            <if test="startFloor!=null and endFloor!=null">
+                and c.floor>=#{startFloor} and #{endFloor} >=c.floor
+            </if>
+        </where>
+        order by c.floor desc, r.create_time;
+    </select>
 </mapper>
