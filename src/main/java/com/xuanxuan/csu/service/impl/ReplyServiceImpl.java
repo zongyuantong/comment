@@ -42,22 +42,15 @@ public class ReplyServiceImpl extends AbstractService<Reply> implements ReplySer
     public void addNewReply(ReplyDTO replyDTO) {
         Reply reply = new Reply();
         BeanUtils.copyProperties(replyDTO, reply);
-        //判断回复的类型
-        Comment comment = commentMapper.selectByPrimaryKey(replyDTO.getReplyId());
-        if (comment == null) {
-            //再判断是否回复了回复
-            Reply reply1 = replyMapper.selectByPrimaryKey(replyDTO.getReplyId());
-            if (reply1 == null) throw new ServiceException("回复目标id不存在");
-            else {
-                reply.setReplyType(2);//回复的回复
-                String commentId = reply1.getCommentId();
-                reply.setCommentId(commentId);
-            }
+        //得到对应的评论
+        Comment comment = null;
+        if (replyDTO.getReplyType() == 1) {
+            comment = commentMapper.selectByPrimaryKey(replyDTO.getReplyId());
         } else {
-            reply.setReplyType(1);//回复评论
-            reply.setCommentId(comment.getId());
+            Reply to_reply = replyMapper.selectByPrimaryKey(replyDTO.getReplyId());
+            comment = commentMapper.selectByPrimaryKey(to_reply.getCommentId());
         }
-        //持久化
+        reply.setCommentId(comment.getId());
         replyMapper.insert(reply);
         //同时,对应的评论的回复量要+1
         comment.setReplyNum(comment.getReplyNum() + 1);

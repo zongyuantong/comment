@@ -1,12 +1,13 @@
 package com.xuanxuan.csu.dao;
 
+import com.xuanxuan.csu.core.ConditionMap;
 import com.xuanxuan.csu.core.Mapper;
 import com.xuanxuan.csu.model.Comment;
 import com.xuanxuan.csu.model.CommentDetail;
 import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CommentMapper extends Mapper<Comment> {
 
@@ -28,4 +29,13 @@ public interface CommentMapper extends Mapper<Comment> {
     public List<CommentDetail> selectCommentListByPassageId(@Param("id") String passageId,
                                                             @Param("page") int page,
                                                             @Param("size") int size);
+
+
+    /**
+     * 通过条件查找文章的评论内容
+     *
+     * @param condition
+     * @return
+     */
+    public List<CommentDetail> selectCommentListByCondition(Map<String, Object> condition);
 }

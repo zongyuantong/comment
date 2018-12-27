@@ -10,7 +10,6 @@ import com.xuanxuan.csu.model.CommentDetail;
 import com.xuanxuan.csu.model.Reply;
 import com.xuanxuan.csu.model.UserInfo;
 import com.xuanxuan.csu.service.ReplyService;
-import com.xuanxuan.csu.service.UserInfoService;
 import com.xuanxuan.csu.util.DateTranStrategy;
 import com.xuanxuan.csu.util.VoConvertor;
 import com.xuanxuan.csu.vo.CommentVO;

@@ -1,12 +1,11 @@
 package com.xuanxuan.csu.service.impl;
 
 import com.xuanxuan.csu.configurer.AppConfigurer;
+import com.xuanxuan.csu.core.ConditionMap;
 import com.xuanxuan.csu.core.ServiceException;
 import com.xuanxuan.csu.dao.CommentMapper;
 import com.xuanxuan.csu.dao.PassageMapper;
-import com.xuanxuan.csu.dto.CommentDTO;
 import com.xuanxuan.csu.dto.RefreshDTO;
-import com.xuanxuan.csu.dto.ReplyDTO;
 import com.xuanxuan.csu.model.Comment;
 import com.xuanxuan.csu.model.CommentDetail;
 import com.xuanxuan.csu.model.Passage;
@@ -17,7 +16,6 @@ import com.xuanxuan.csu.service.UserInfoService;
 import com.xuanxuan.csu.util.VoConvertor;
 import com.xuanxuan.csu.vo.CommentRefreshVO;
 import com.xuanxuan.csu.vo.CommentVO;
-import com.xuanxuan.csu.vo.PassageVO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
@@ -37,19 +35,16 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
     private PassageMapper passageMapper;
 
     @Resource
-    private CommentService commentService;
-
-    @Resource
-    private VoConvertor<Comment, CommentVO> commentVoConvertor;
-
-    @Resource
-    private VoConvertor<CommentDetail, CommentVO> convertor;
-
-    @Resource
     private CommentMapper commentMapper;
 
     @Resource
     private UserInfoService userInfoService;
+
+    /**
+     * 注入do到vo的转换器
+     */
+    @Resource
+    private VoConvertor<CommentDetail, CommentVO> convertor;
 
     @Override
     public List<CommentVO> getComments(String passageId, int page) {
@@ -84,40 +79,40 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
 
     @Override
     public CommentRefreshVO getRefreshComments(RefreshDTO refreshDTO) {
+        //判断对应文章是否存在
         Passage passage = passageMapper.selectByPrimaryKey(refreshDTO.getPassageId());
-        if (passage == null) throw new ServiceException("文章id不存在");
-        int startFloor = refreshDTO.getStartFloor();
-        int endFloor = refreshDTO.getEndFloor();
-        //创建容器存储数据
-        CommentRefreshVO commentRefreshVO = new CommentRefreshVO();
-        //1. 首先创建容器存放最新的评论内容
-        List<CommentVO> newComments = new ArrayList<>();
-        //查询楼层数比endFloor更大的
-        Condition condition = new Condition(Comment.class);
-        condition.createCriteria()
-                .andCondition("floor>", endFloor)
-                .andCondition("passage_id=", refreshDTO.getPassageId());
-        condition.orderBy("floor").desc();//按照楼层数反序排序
-        List<Comment> commentList = commentService.findByCondition(condition);
-        commentList.forEach(comment -> {
-            newComments.add(commentVoConvertor.conver2Vo(comment));
-        });
-        commentRefreshVO.setAddNum(commentList.size());
-        commentRefreshVO.setNewComments(newComments);
 
-        //2. 重新加载刷新已经加载过的评论(start to end)
-        List<CommentVO> refreshComments = new ArrayList<>();
-        Condition condition2 = new Condition(Comment.class);
-        condition2.createCriteria()
-                .andCondition("floor>=", startFloor)
-                .andCondition("floor<=", endFloor)
-                .andCondition("passage_id=", refreshDTO.getPassageId());
-        condition2.orderBy("floor").desc();
-        List<Comment> commentList2 = commentService.findByCondition(condition2);
-        for (Comment comment : commentList2) {
-            refreshComments.add(commentVoConvertor.conver2Vo(comment));
+        if (passage == null) {
+            throw new ServiceException("文章id不存在");
         }
-        commentRefreshVO.setRefreshComments(refreshComments);
+
+        //存储最新评论
+        List<CommentVO> newCommentVOList = new ArrayList<>();
+        //存储刷新的评论
+        List<CommentVO> refreshCommentVOList = new ArrayList<>();
+        //存储刷新的响应实体
+        CommentRefreshVO commentRefreshVO = new CommentRefreshVO();
+
+
+        /**1. 刷新得到最新的数据(end->max)*/
+        ConditionMap conditionMap = new ConditionMap(refreshDTO);
+        conditionMap.removeCondition("startFloor");
+        List<CommentDetail> newCommentDetailList = commentMapper.selectCommentListByCondition(conditionMap.getConditionMap());
+        newCommentDetailList.forEach(commentDetail -> {
+            newCommentVOList.add(convertor.conver2Vo(commentDetail));
+        });
+        commentRefreshVO.setAddNum(newCommentVOList.size());
+        commentRefreshVO.setNewComments(newCommentVOList);
+
+        /**2. 重新加载刷新已经加载过的评论(start to end)*/
+        conditionMap.addCondition("startFloor", refreshDTO.getStartFloor());
+        List<CommentDetail> refreshCommentDetailList = commentMapper.selectCommentListByCondition(conditionMap.getConditionMap());
+        refreshCommentDetailList.forEach(refreshCommentDetail -> {
+            refreshCommentVOList.add(convertor.conver2Vo(refreshCommentDetail));
+        });
+        commentRefreshVO.setRefreshComments(refreshCommentVOList);
+
+        //返回值
         return commentRefreshVO;
 
     }
