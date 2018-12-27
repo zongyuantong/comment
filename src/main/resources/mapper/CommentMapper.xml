@@ -92,7 +92,7 @@
             <if test="passageId!=null">
                 and c.passage_id = #{passageId}
             </if>
-            <if test="endFloor!=null">
+            <if test="endFloor!=null and startFloor==null">
                 and c.floor > #{endFloor}
             </if>
             <if test="startFloor!=null and endFloor!=null">

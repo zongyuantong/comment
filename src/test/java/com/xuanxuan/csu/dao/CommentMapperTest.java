@@ -110,15 +110,29 @@ public class CommentMapperTest extends Tester {
         refreshDTO.setStartFloor(1);
 
         ConditionMap conditionMap = new ConditionMap(refreshDTO);
-        System.out.println("条件为" + conditionMap);
 
         //进行条件查询
         conditionMap.removeAll();
         conditionMap.addCondition("passageId", "test1");
-        conditionMap.addCondition("endFloor", 4);
+        conditionMap.addCondition("endFloor", 9);
+        System.out.println("条件为" + conditionMap);
 
         List<CommentDetail> commentDetailList = commentMapper.selectCommentListByCondition(conditionMap.getConditionMap());
 
+        System.out.println(commentDetailList);
+
+    }
+
+    @Test
+    public void test6() {
+        //构造条件
+        RefreshDTO refreshDTO = new RefreshDTO();
+        refreshDTO.setPassageId("test1");
+        refreshDTO.setEndFloor(4);
+        refreshDTO.setStartFloor(1);
+        ConditionMap conditionMap = new ConditionMap(refreshDTO);
+        System.out.println("条件为" + conditionMap);
+        List<CommentDetail> commentDetailList = commentMapper.selectCommentListByCondition(conditionMap.getConditionMap());
         System.out.println(commentDetailList);
 
     }
