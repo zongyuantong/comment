@@ -18,6 +18,7 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -34,11 +35,9 @@ public class WeChatUserServiceImpl extends AbstractService<UserInfo> implements 
 
     //小程序的app_id
     private static final String appId = "wx94615bd0bc6e1d73";
-//    private static final String appId = "wxf7597e992f6dbaa7";//测试账号
 
     //小程序的secret_key
     private static final String secretKey = "ec948811317899de3436e55099716e42";
-//    private static final String secretKey = "a987879c2ac414c8cb61bf7b4ee96a55";//测试密码
 
     //小程序的grant_type
     private static final String grantType = "authorization_code";
@@ -74,7 +73,7 @@ public class WeChatUserServiceImpl extends AbstractService<UserInfo> implements 
         //通过openId和sessionId生成value作为sessionId的值
         String sessionId = UUID.randomUUID().toString();
         //存放到redis中,用","分割,10个小时时间
-        redisTemplate.opsForValue().set(sessionId, openId + "," + session_key, 36000);
+        redisTemplate.opsForValue().set(sessionId, openId + "," + session_key, 36000, TimeUnit.SECONDS);
         //将会话id返回给前端,后续请求在header中加入sessionId,
         Map<String, String> map = new HashMap<>();
         map.put("sessionId", sessionId);

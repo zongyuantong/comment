@@ -10,6 +10,8 @@ import com.xuanxuan.csu.core.ResultCode;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -20,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 登陆状态校验的拦截器,对部分api进行登陆信息验证的拦截
@@ -29,7 +32,7 @@ import java.lang.reflect.Method;
 public class LoginInterceptor implements HandlerInterceptor {
 
     @Resource
-    RedisTemplate redisTemplate;
+    private RedisTemplate redisTemplate;
 
     //日志记录
     private final Logger logger = LoggerFactory.getLogger(WebMvcConfigurer.class);
@@ -46,7 +49,6 @@ public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //首先判断是否是映射到方法的请求,不是方法直接通过
-
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
@@ -86,15 +88,17 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (StringUtils.isEmpty(sessionId)) {
             return false;
         }
+        System.out.println(sessionId);
+        System.out.println(redisTemplate.opsForValue().get(sessionId));
         //从缓存中取得sessonId的值
-        System.out.println(redisTemplate);
         String result = (String) redisTemplate.opsForValue().get(sessionId);
         //请求头的sessionId无效
         if (StringUtils.isEmpty(result)) {
             return false;
         }
+
         //存在此sessonId,说明验证成功,更新过期时间
-        redisTemplate.opsForValue().set(sessionId, result, AppConfigurer.LOGIN_SESSION_TIME);
+        redisTemplate.opsForValue().set(sessionId, result, AppConfigurer.LOGIN_SESSION_TIME, TimeUnit.SECONDS);
         return true;
     }
 

@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -32,7 +33,7 @@ public class AdminServiceImpl extends AbstractService<Admin> implements AdminSer
             String sessionId = UUID.randomUUID().toString();
             //使用用户名+密码作为value存到redis中
             String token = admin.getUsername() + "," + admin.getPassword();
-            redisTemplate.opsForValue().set(sessionId, token, AppConfigurer.LOGIN_SESSION_TIME);
+            redisTemplate.opsForValue().set(sessionId, token, AppConfigurer.LOGIN_SESSION_TIME, TimeUnit.SECONDS);
             return sessionId;
         }
         return null;

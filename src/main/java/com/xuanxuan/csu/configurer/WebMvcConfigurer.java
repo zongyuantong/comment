@@ -24,6 +24,7 @@ import com.xuanxuan.csu.configurer.interceptor.TokenInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.MediaType;
@@ -44,6 +45,22 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  */
 @Configuration
 public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
+
+    /**
+     * 注入login拦截器的bean
+     */
+    @Bean
+    LoginInterceptor loginInterceptor() {
+        return new LoginInterceptor();
+    }
+
+    /**
+     * 注入jwt拦截器的bean
+     */
+    @Bean
+    TokenInterceptor tokenInterceptor() {
+        return new TokenInterceptor();
+    }
 
     /**
      * 加载redis操作类
@@ -121,9 +138,9 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         if (!"dev".equals(env)) { //开发环境忽略签名认证
             //1. 添加登陆验证拦截器
-            registry.addInterceptor(new LoginInterceptor());
+            registry.addInterceptor(loginInterceptor());
             // 2. 添加jwt验证拦截器
-            registry.addInterceptor(new TokenInterceptor());
+            registry.addInterceptor(tokenInterceptor());
         }
     }
 
