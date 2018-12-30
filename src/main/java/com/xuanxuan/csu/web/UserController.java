@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +49,7 @@ public class UserController {
     @ApiOperation(value = "同步用户数据api,每次重新登陆都需要同步")
     @PostMapping("/auth")
     @LoginRequired
-    public Result auth(@RequestBody UserDTO userDTO) {
+    public Result auth(@Valid @RequestBody UserDTO userDTO) {
         userInfoService.auth(userDTO);
         return ResultGenerator.genSuccessResult();
     }

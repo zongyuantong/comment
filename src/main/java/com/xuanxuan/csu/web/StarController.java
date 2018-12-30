@@ -32,7 +32,7 @@ public class StarController {
     @ApiOperation(value = "对评论取消点赞")
     @DeleteMapping
     @LoginRequired
-    public Result delete(@RequestBody StarDTO star, HttpServletRequest request) {
+    public Result delete(@Valid @RequestBody StarDTO star, HttpServletRequest request) {
         String openId = (String) request.getAttribute("openId");
         star.setUserId(openId);
         starService.cancelZan(star);

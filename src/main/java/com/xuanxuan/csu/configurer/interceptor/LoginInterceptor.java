@@ -87,6 +87,7 @@ public class LoginInterceptor implements HandlerInterceptor {
             return false;
         }
         //从缓存中取得sessonId的值
+        System.out.println(redisTemplate);
         String result = (String) redisTemplate.opsForValue().get(sessionId);
         //请求头的sessionId无效
         if (StringUtils.isEmpty(result)) {
