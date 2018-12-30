@@ -100,9 +100,9 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
 
 
     @Override
-    public void updateComment(CommentDTO commentDTO, String commentId) {
+    public void updateComment(CommentDTO commentDTO) {
         //查询是否存在此评论
-        Comment comment = commentMapper.selectByPrimaryKey(commentId);
+        Comment comment = commentMapper.selectByPrimaryKey(commentDTO.getCommentId());
         if (comment == null) throw new ServiceException("评论id错误");
         if (!comment.getPassageId().equals(commentDTO.getPassageId())) throw new ServiceException("文章id错误");
         if (!comment.getFromUid().equals(commentDTO.getFromUid())) throw new ServiceException("所属用户id错误");

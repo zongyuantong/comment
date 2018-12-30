@@ -25,7 +25,9 @@ public class AdminController {
 
     /**
      * @param admin
+     * @return
      */
+
     @PostMapping
     @ApiOperation(value = "管理员登陆")
     public Result login(@Valid @RequestBody Admin admin) {

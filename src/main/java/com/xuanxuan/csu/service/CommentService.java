@@ -36,7 +36,7 @@ public interface CommentService extends Service<Comment> {
      *
      * @param commentDTO
      */
-    public void updateComment(CommentDTO commentDTO, String commentId);
+    public void updateComment(CommentDTO commentDTO);
 
 
     /**

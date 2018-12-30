@@ -13,11 +13,13 @@ import javax.validation.constraints.Null;
 @Data
 public class CommentDTO {
 
+    private String commentId;
+
     @NotNull(message = "文章id不能为空")
     //评论对应的文章id
     private String passageId;
 
-    @NotNull(message = "评论内容不能为空")
+    @NotNull(message = "评论content不能为空")
     //评论的内容
     private String content;
 
