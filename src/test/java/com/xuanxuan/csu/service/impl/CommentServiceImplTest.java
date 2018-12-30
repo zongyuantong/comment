@@ -166,7 +166,8 @@ public class CommentServiceImplTest extends Tester {
         commentDTO.setContent("测试更新new");
         commentDTO.setPassageId("test1");
         commentDTO.setFromUid("test1");
-        commentService.updateComment(commentDTO, "test1");
+        commentDTO.setCommentId("test1");
+        commentService.updateComment(commentDTO);
         Comment comment = commentService.findById("test1");
         //进行断言
         assertEquals("测试更新new", comment.getContent());
@@ -174,7 +175,7 @@ public class CommentServiceImplTest extends Tester {
         //特殊情况测试
         commentDTO.setFromUid("null");
         try {
-            commentService.updateComment(commentDTO, "test1");
+            commentService.updateComment(commentDTO);
             throw new RuntimeException("测试未通过,没有正常抛出异常");
         } catch (ServiceException e) {
             System.out.println(e.getMessage());
@@ -184,7 +185,7 @@ public class CommentServiceImplTest extends Tester {
         commentDTO.setFromUid("test");
         commentDTO.setPassageId("null");
         try {
-            commentService.updateComment(commentDTO, "test1");
+            commentService.updateComment(commentDTO);
             throw new RuntimeException("测试未通过,没有正常抛出异常");
         } catch (ServiceException e) {
             System.out.println(e.getMessage());
@@ -193,7 +194,7 @@ public class CommentServiceImplTest extends Tester {
         //特殊情况测试
         commentDTO.setPassageId("test");
         try {
-            commentService.updateComment(commentDTO, "null");
+            commentService.updateComment(commentDTO);
             throw new RuntimeException("测试未通过,没有正常抛出异常");
         } catch (ServiceException e) {
             System.out.println(e.getMessage());

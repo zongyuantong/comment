@@ -46,10 +46,10 @@ public class CommentController {
      */
 
     @ApiOperation(value = "更新评论内容")
-    @PutMapping("/{commentId}")
+    @PutMapping
     @LoginRequired
-    public Result updateComment(@Valid @RequestBody CommentDTO commentDTO, @PathVariable String commentId) {
-        commentService.updateComment(commentDTO, commentId);
+    public Result updateComment(@Valid @RequestBody CommentDTO commentDTO) {
+        commentService.updateComment(commentDTO);
         return ResultGenerator.genSuccessResult();
     }
 
