@@ -17,7 +17,7 @@ import java.util.List;
  * Created by PualrDwade on 2018/12/22.
  */
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("/api/admin")
 public class AdminController {
 
     @Resource

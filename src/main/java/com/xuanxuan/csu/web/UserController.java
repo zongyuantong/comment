@@ -8,6 +8,7 @@ import com.xuanxuan.csu.model.UserInfo;
 import com.xuanxuan.csu.service.UserInfoService;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,6 +20,7 @@ import java.util.Map;
 /**
  * Created by PualrDwade on 2018/12/03.
  */
+
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
@@ -63,6 +65,7 @@ public class UserController {
      */
     @GetMapping("/{openId}")
     @ApiOperation(value = "得到用户详细信息")
+    @LoginRequired
     public Result detail(@PathVariable String openId) {
         UserInfo userInfo = userInfoService.findById(openId);
         return ResultGenerator.genSuccessResult(userInfo);
@@ -78,6 +81,7 @@ public class UserController {
      */
     @ApiOperation(value = "得到所有用户信息")
     @GetMapping
+    @LoginRequired
     public Result list(@RequestParam(defaultValue = "0") Integer page, @RequestParam(defaultValue = "0") Integer size) {
         PageHelper.startPage(page, size);
         List<UserInfo> list = userInfoService.findAll();
@@ -94,6 +98,7 @@ public class UserController {
      */
     @ApiOperation(value = "得到用户状态(点赞....)")
     @GetMapping("/{openId}/state")
+    @LoginRequired
     public Result userState(@PathVariable String openId) {
         return ResultGenerator.genSuccessResult(userInfoService.getUserState(openId));
     }

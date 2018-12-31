@@ -24,8 +24,8 @@ public class StarController {
     @ApiOperation(value = "对评论进行点赞")
     @PostMapping
     @LoginRequired
-    public Result add(@Valid @RequestBody StarDTO star) {
-        starService.zan(star);
+    public Result add(@Valid @RequestBody StarDTO starDTO) {
+        starService.zan(starDTO);
         return ResultGenerator.genSuccessResult();
     }
 

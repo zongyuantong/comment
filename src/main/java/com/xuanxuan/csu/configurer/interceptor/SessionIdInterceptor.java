@@ -7,6 +7,7 @@ import com.xuanxuan.csu.configurer.AppConfigurer;
 import com.xuanxuan.csu.configurer.WebMvcConfigurer;
 import com.xuanxuan.csu.core.Result;
 import com.xuanxuan.csu.core.ResultCode;
+import com.xuanxuan.csu.util.CommonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,13 +30,16 @@ import java.util.concurrent.TimeUnit;
  */
 
 @Component
-public class LoginInterceptor implements HandlerInterceptor {
+public class SessionIdInterceptor implements HandlerInterceptor {
 
     @Resource
     private RedisTemplate redisTemplate;
 
     //日志记录
     private final Logger logger = LoggerFactory.getLogger(WebMvcConfigurer.class);
+
+    //工具类
+    private CommonUtil commonUtil = new CommonUtil();
 
     /**
      * 重写拦截请求
@@ -88,8 +92,6 @@ public class LoginInterceptor implements HandlerInterceptor {
         if (StringUtils.isEmpty(sessionId)) {
             return false;
         }
-        System.out.println(sessionId);
-        System.out.println(redisTemplate.opsForValue().get(sessionId));
         //从缓存中取得sessonId的值
         String result = (String) redisTemplate.opsForValue().get(sessionId);
         //请求头的sessionId无效
@@ -110,39 +112,11 @@ public class LoginInterceptor implements HandlerInterceptor {
      * @return
      */
     private String getIpAddress(HttpServletRequest request) {
-        String ip = request.getHeader("x-forwarded-for");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_CLIENT_IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        // 如果是多级代理，那么取第一个ip为客户端ip
-        if (ip != null && ip.indexOf(",") != -1) {
-            ip = ip.substring(0, ip.indexOf(",")).trim();
-        }
-
-        return ip;
+        return commonUtil.getIpAddress(request);
     }
 
     private void responseResult(HttpServletResponse response, Result result) {
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("Content-type", "application/json;charset=UTF-8");
-        response.setStatus(200);
-        try {
-            response.getWriter().write(JSON.toJSONString(result));
-        } catch (IOException ex) {
-            logger.error(ex.getMessage());
-        }
+        commonUtil.responseResult(response, result);
     }
 
 

@@ -77,6 +77,7 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
         condition.createCriteria().andCondition("passage_id=", commentDTO.getPassageId());
         condition.orderBy("floor").desc();//最大楼层排序在最上面
         List<Comment> comments = commentMapper.selectByCondition(condition);
+
         if (comments.size() != 0) {
             comment.setFloor(comments.get(0).getFloor() + 1);
         } else {
@@ -84,6 +85,7 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
             comment.setFloor(1);
         }
         commentMapper.insert(comment);
+
     }
 
 
@@ -91,6 +93,7 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
     public void deleteComment(String commentId) {
         Comment comment = commentMapper.selectByPrimaryKey(commentId);
         if (comment == null) throw new ServiceException("评论id错误");
+
         Condition condition = new Condition(Reply.class);
         condition.createCriteria().andCondition("comment_id=", commentId);
         replyMapper.deleteByCondition(condition);
@@ -104,12 +107,14 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
         //查询是否存在此评论
         Comment comment = commentMapper.selectByPrimaryKey(commentDTO.getCommentId());
         if (comment == null) throw new ServiceException("评论id错误");
+
         if (!comment.getPassageId().equals(commentDTO.getPassageId())) throw new ServiceException("文章id错误");
+
         if (!comment.getFromUid().equals(commentDTO.getFromUid())) throw new ServiceException("所属用户id错误");
+
         //进行保存
         comment.setContent(commentDTO.getContent());
         commentMapper.updateByPrimaryKey(comment);
-        System.out.println("文章更新成功");
 
     }
 }

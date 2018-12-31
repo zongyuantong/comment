@@ -66,8 +66,6 @@ public class WeChatUserServiceImpl extends AbstractService<UserInfo> implements 
         String response = restTemplate.getForObject(url, String.class);
         //转换成json对象
         JSONObject jsonObject = JSON.parseObject(response);
-        //打印显示
-        System.out.println(jsonObject);
         //会话密钥(很重要,用来验证userInfo的真实性)
         String session_key = jsonObject.getString("session_key");
         //用户唯一标识

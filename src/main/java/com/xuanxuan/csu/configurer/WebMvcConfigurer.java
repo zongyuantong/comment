@@ -11,16 +11,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.serializer.SerializeConfig;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 
+import com.xuanxuan.csu.configurer.interceptor.LogInterceptor;
 import com.xuanxuan.csu.core.Result;
 import com.xuanxuan.csu.core.ResultCode;
 import com.xuanxuan.csu.core.ServiceException;
-import com.xuanxuan.csu.configurer.interceptor.LoginInterceptor;
+import com.xuanxuan.csu.configurer.interceptor.SessionIdInterceptor;
 import com.xuanxuan.csu.configurer.interceptor.TokenInterceptor;
+import com.xuanxuan.csu.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,8 +51,8 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
      * 注入login拦截器的bean
      */
     @Bean
-    LoginInterceptor loginInterceptor() {
-        return new LoginInterceptor();
+    SessionIdInterceptor sessionIdInterceptor() {
+        return new SessionIdInterceptor();
     }
 
     /**
@@ -63,14 +64,26 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
     }
 
     /**
+     * 注入日志拦截器的bean
+     */
+    @Bean
+    LogInterceptor logInterceptor() {
+        return new LogInterceptor();
+    }
+
+
+    /**
      * 加载redis操作类
      */
     @Resource
     RedisTemplate redisTemplate;
 
     private final Logger logger = LoggerFactory.getLogger(WebMvcConfigurer.class);
+
     @Value("${spring.profiles.active}")
     private String env;//当前激活的配置文件
+
+    private CommonUtil commonUtil = new CommonUtil();
 
     //使用阿里 FastJson 作为JSON MessageConverter
     @Override
@@ -136,12 +149,16 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
     //统一添加拦截器
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+
         if (!"dev".equals(env)) { //开发环境忽略签名认证
             //1. 添加登陆验证拦截器
-            registry.addInterceptor(loginInterceptor());
+            registry.addInterceptor(sessionIdInterceptor());
             // 2. 添加jwt验证拦截器
             registry.addInterceptor(tokenInterceptor());
         }
+        //添加日志记录
+        registry.addInterceptor(logInterceptor());
+
     }
 
     /**
@@ -169,14 +186,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
      * @param result
      */
     private void responseResult(HttpServletResponse response, Result result) {
-        response.setCharacterEncoding("UTF-8");
-        response.setHeader("Content-type", "application/json;charset=UTF-8");
-        response.setStatus(200);
-        try {
-            response.getWriter().write(JSON.toJSONString(result));
-        } catch (IOException ex) {
-            logger.error(ex.getMessage());
-        }
+        commonUtil.responseResult(response, result);
     }
 
 

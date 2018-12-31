@@ -29,12 +29,25 @@ public class WeChatUserServiceImplTest extends Tester {
         System.out.println(result);
     }
 
+
     @Test
     public void testAuth() {
     }
 
+
+    /**
+     * 测试验证登陆
+     */
     @Test
     public void testLogin() {
 
+    }
+
+    /**
+     * 测试得到用户状态
+     */
+    @Test
+    public void getUserState() {
+        //尝试点赞
     }
 }
