@@ -19,7 +19,7 @@ public class UserInfo {
     private String avatarUrl = "";
 
     @Column(name = "gender")
-    private int gender = 1;
+    private Integer gender = 1;
 
     @Column(name = "country")
     private String country = "";

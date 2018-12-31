@@ -16,11 +16,4 @@ public interface StarService extends Service<UserStar> {
      */
     public void zan(StarDTO starDTO);
 
-
-    /**
-     * 取消点赞(使用redid缓存,只取消缓存中的点赞)
-     *
-     * @param starDTO
-     */
-    public void cancelZan(StarDTO starDTO);
 }

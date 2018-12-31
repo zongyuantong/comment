@@ -61,10 +61,10 @@ public class UserController {
      * @param id
      * @return
      */
-    @GetMapping("/{id}")
+    @GetMapping("/{openId}")
     @ApiOperation(value = "得到用户详细信息")
-    public Result detail(@PathVariable String id) {
-        UserInfo userInfo = userInfoService.findById(id);
+    public Result detail(@PathVariable String openId) {
+        UserInfo userInfo = userInfoService.findById(openId);
         return ResultGenerator.genSuccessResult(userInfo);
     }
 
@@ -83,5 +83,18 @@ public class UserController {
         List<UserInfo> list = userInfoService.findAll();
         PageInfo pageInfo = new PageInfo(list);
         return ResultGenerator.genSuccessResult(pageInfo);
+    }
+
+
+    /**
+     * 得到用户状态
+     *
+     * @param openId
+     * @return
+     */
+    @ApiOperation(value = "得到用户状态(点赞....)")
+    @GetMapping("/{openId}/state")
+    public Result userState(@PathVariable String openId) {
+        return ResultGenerator.genSuccessResult(userInfoService.getUserState(openId));
     }
 }

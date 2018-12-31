@@ -3,6 +3,7 @@ package com.xuanxuan.csu.service;
 import com.xuanxuan.csu.dto.UserDTO;
 import com.xuanxuan.csu.model.UserInfo;
 import com.xuanxuan.csu.core.Service;
+import com.xuanxuan.csu.vo.UserStateVO;
 
 import java.util.Map;
 
@@ -27,5 +28,13 @@ public interface UserInfoService extends Service<UserInfo> {
      * @param userDTO
      */
     public void auth(UserDTO userDTO);
+
+
+    /**
+     * 通过用户openId,得到用户的动态(点赞)
+     *
+     * @param openId
+     */
+    public UserStateVO getUserState(String openId);
 
 }

@@ -4,20 +4,23 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.xuanxuan.csu.core.ServiceException;
 import com.xuanxuan.csu.dao.UserInfoMapper;
+import com.xuanxuan.csu.dao.UserStarMapper;
 import com.xuanxuan.csu.dto.UserDTO;
 import com.xuanxuan.csu.model.UserInfo;
+import com.xuanxuan.csu.model.UserStar;
+import com.xuanxuan.csu.service.StarService;
 import com.xuanxuan.csu.service.UserInfoService;
 import com.xuanxuan.csu.core.AbstractService;
+import com.xuanxuan.csu.vo.UserStateVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 
@@ -29,6 +32,9 @@ import java.util.concurrent.TimeUnit;
 public class WeChatUserServiceImpl extends AbstractService<UserInfo> implements UserInfoService {
     @Resource
     private UserInfoMapper userInfoMapper;
+
+    @Resource
+    private StarService starService;
 
     @Resource
     private RedisTemplate redisTemplate;
@@ -66,6 +72,7 @@ public class WeChatUserServiceImpl extends AbstractService<UserInfo> implements 
         String session_key = jsonObject.getString("session_key");
         //用户唯一标识
         String openId = jsonObject.getString("openid");
+
         //后续加入单点登陆验证
         if (openId == null || session_key == null) {
             throw new ServiceException("登陆api请求失败");
@@ -101,6 +108,34 @@ public class WeChatUserServiceImpl extends AbstractService<UserInfo> implements 
             throw new ServiceException("用户信息校验失败");
         }
 
+    }
+
+    @Override
+    public UserStateVO getUserState(String openId) {
+
+        UserStateVO userStateVO = new UserStateVO();
+
+        //创建容器进行存储
+        List<String> commentStarList = new ArrayList<>();
+        List<String> replyStarList = new ArrayList<>();
+
+
+        //1.得到用户的点赞
+        Condition condition = new Condition(UserStar.class);
+        condition.createCriteria().andCondition("user_id=", openId);
+        List<UserStar> starList = starService.findByCondition(condition);
+        starList.forEach(userStar -> {
+            if (userStar.getToType().equals(1)) {
+                commentStarList.add(userStar.getToId());
+            } else {
+                replyStarList.add(userStar.getToId());
+            }
+        });
+
+        userStateVO.setCommentStarList(commentStarList);
+        userStateVO.setReplyStarList(replyStarList);
+
+        return userStateVO;
     }
 
     /**

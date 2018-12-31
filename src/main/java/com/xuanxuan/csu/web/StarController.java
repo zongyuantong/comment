@@ -29,14 +29,4 @@ public class StarController {
         return ResultGenerator.genSuccessResult();
     }
 
-    @ApiOperation(value = "对评论取消点赞")
-    @DeleteMapping
-    @LoginRequired
-    public Result delete(@Valid @RequestBody StarDTO star, HttpServletRequest request) {
-        String openId = (String) request.getAttribute("openId");
-        star.setUserId(openId);
-        starService.cancelZan(star);
-        return ResultGenerator.genSuccessResult();
-    }
-
 }

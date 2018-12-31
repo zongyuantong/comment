@@ -22,7 +22,7 @@ public class UserDTO {
 
 
     @NotNull(message = "用户gender不能为空")
-    private int gender;
+    private Integer gender;
 
     @NotNull(message = "用户country不能为空")
     private String country;
