@@ -55,5 +55,12 @@ public interface CommentService extends Service<Comment> {
      */
     public void commentsFilter(List<CommentVO> commentVOList, String sessionId);
 
+    /**
+     * 重载方法,对单个进行点赞过滤
+     *
+     * @param sessionId
+     */
+    public void commentsFilter(CommentVO commentVO, String sessionId);
+
 
 }

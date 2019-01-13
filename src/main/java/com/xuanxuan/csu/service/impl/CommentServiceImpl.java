@@ -110,6 +110,9 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
     @Override
     public void commentsFilter(List<CommentVO> commentVOList, String sessionId) {
         //判断session是否有效
+        if (StringUtils.isEmpty(sessionId)) {
+            return;
+        }
         String openId = (String) redisTemplate.opsForValue().get(sessionId);
         if (!StringUtils.isEmpty(openId)) {
             UserStateVO userStateVO = userInfoService.getUserState(openId);
@@ -122,6 +125,13 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
                 });
             });
         }
+    }
+
+    @Override
+    public void commentsFilter(CommentVO commentVO, String sessionId) {
+        List<CommentVO> commentVOList = new ArrayList<>();
+        commentVOList.add(commentVO);
+        commentsFilter(commentVOList, sessionId);
     }
 
 

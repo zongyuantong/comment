@@ -31,9 +31,7 @@ public class AdminServiceImpl extends AbstractService<Admin> implements AdminSer
         Admin admin1 = adminMapper.selectByPrimaryKey(admin.getUsername());
         if (admin1 != null) {
             String sessionId = UUID.randomUUID().toString();
-            //使用用户名+密码作为value存到redis中
-            String token = admin.getUsername() + "," + admin.getPassword();
-            redisTemplate.opsForValue().set(sessionId, token, AppConfigurer.LOGIN_SESSION_TIME, TimeUnit.SECONDS);
+            redisTemplate.opsForValue().set(sessionId, admin.getUsername(), AppConfigurer.LOGIN_SESSION_TIME, TimeUnit.SECONDS);
             return sessionId;
         }
         return null;

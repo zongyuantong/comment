@@ -207,7 +207,7 @@ public class CommentServiceImplTest extends Tester {
      */
     @Test
     public void testCommentsFilter() {
-        
+
     }
 
 }

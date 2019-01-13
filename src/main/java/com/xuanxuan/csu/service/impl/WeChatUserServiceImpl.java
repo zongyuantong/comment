@@ -2,6 +2,7 @@ package com.xuanxuan.csu.service.impl;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.xuanxuan.csu.configurer.AppConfigurer;
 import com.xuanxuan.csu.core.ServiceException;
 import com.xuanxuan.csu.dao.UserInfoMapper;
 import com.xuanxuan.csu.dao.UserStarMapper;
@@ -74,8 +75,8 @@ public class WeChatUserServiceImpl extends AbstractService<UserInfo> implements 
         }
         //通过openId和sessionId生成value作为sessionId的值
         String sessionId = UUID.randomUUID().toString();
-        //存放到redis中,用","分割,10个小时时间
-        redisTemplate.opsForValue().set(sessionId, openId + "," + session_key, 36000, TimeUnit.SECONDS);
+        //存放到redis中,10个小时时间
+        redisTemplate.opsForValue().set(sessionId, openId, AppConfigurer.LOGIN_SESSION_TIME, TimeUnit.SECONDS);
         //将会话id返回给前端,后续请求在header中加入sessionId,
         Map<String, String> map = new HashMap<>();
         map.put("sessionId", sessionId);

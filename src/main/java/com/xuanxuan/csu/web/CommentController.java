@@ -5,11 +5,15 @@ import com.xuanxuan.csu.core.Result;
 import com.xuanxuan.csu.core.ResultGenerator;
 import com.xuanxuan.csu.dto.CommentDTO;
 import com.xuanxuan.csu.service.CommentService;
+import com.xuanxuan.csu.vo.CommentVO;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by PualrDwade on 2018/12/03.
@@ -76,8 +80,10 @@ public class CommentController {
      */
     @ApiOperation(value = "查看评论详情信息")
     @GetMapping("/{commentId}/replys")
-    public Result CommentDetail(@PathVariable String commentId) {
-        return ResultGenerator.genSuccessResult(commentService.getCommentDetail(commentId));
+    public Result CommentDetail(@PathVariable String commentId, HttpServletRequest request) {
+        CommentVO commentVO = commentService.getCommentDetail(commentId);
+        commentService.commentsFilter(commentVO, request.getHeader("sessionId"));
+        return ResultGenerator.genSuccessResult(commentVO);
     }
 
 }
