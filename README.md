@@ -1,7 +1,5 @@
 # 中南大学云麓谷后台
 
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/a13eee336f124c3ab6d25a71906f45a2)](https://app.codacy.com/app/544493924/CSUYLG?utm_source=github.com&utm_medium=referral&utm_content=PualrDwade/CSUYLG&utm_campaign=Badge_Grade_Dashboard)
-
 #### 评论微服务模块项目
 ##### 系统开发计划
 1. dev分支开发新需求||修改BUG
