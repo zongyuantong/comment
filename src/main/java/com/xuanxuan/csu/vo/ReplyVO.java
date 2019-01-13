@@ -24,4 +24,5 @@ public class ReplyVO {
     private String createTime;//回复时间
     private String commentId;//所属评论的id
     private Integer zanNum;//回复的点赞数
+    private Boolean isZan = false;//是否点赞
 }

@@ -60,9 +60,7 @@ public class WeChatUserServiceImpl extends AbstractService<UserInfo> implements 
         RestTemplate restTemplate = new RestTemplate();//使用resttemplete发送http请求
         String params = "appid=" + appId + "&secret=" + secretKey + "&js_code=" + code
                 + "&grant_type=" + grantType;
-
         String url = "https://api.weixin.qq.com/sns/jscode2session?" + params;// 微信接口 用于查询oponid
-
         String response = restTemplate.getForObject(url, String.class);
         //转换成json对象
         JSONObject jsonObject = JSON.parseObject(response);
@@ -70,7 +68,6 @@ public class WeChatUserServiceImpl extends AbstractService<UserInfo> implements 
         String session_key = jsonObject.getString("session_key");
         //用户唯一标识
         String openId = jsonObject.getString("openid");
-
         //后续加入单点登陆验证
         if (openId == null || session_key == null) {
             throw new ServiceException("登陆api请求失败");
@@ -116,8 +113,6 @@ public class WeChatUserServiceImpl extends AbstractService<UserInfo> implements 
         //创建容器进行存储
         List<String> commentStarList = new ArrayList<>();
         List<String> replyStarList = new ArrayList<>();
-
-
         //1.得到用户的点赞
         Condition condition = new Condition(UserStar.class);
         condition.createCriteria().andCondition("user_id=", openId);
@@ -129,10 +124,8 @@ public class WeChatUserServiceImpl extends AbstractService<UserInfo> implements 
                 replyStarList.add(userStar.getToId());
             }
         });
-
         userStateVO.setCommentStarList(commentStarList);
         userStateVO.setReplyStarList(replyStarList);
-
         return userStateVO;
     }
 

@@ -15,7 +15,7 @@ import java.io.IOException;
  */
 public class CommonUtil {
 
-    private Logger logger = LoggerFactory.getLogger(CommonUtil.class);
+    private static Logger logger = LoggerFactory.getLogger(CommonUtil.class);
 
     /**
      * 得到请求的ip地址
@@ -23,7 +23,7 @@ public class CommonUtil {
      * @param request
      * @return
      */
-    public String getIpAddress(HttpServletRequest request) {
+    public static String getIpAddress(HttpServletRequest request) {
         String ip = request.getHeader("x-forwarded-for");
         if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getHeader("Proxy-Client-IP");
@@ -54,7 +54,7 @@ public class CommonUtil {
      * @param response
      * @param result
      */
-    public void responseResult(HttpServletResponse response, Result result) {
+    public static void responseResult(HttpServletResponse response, Result result) {
         response.setCharacterEncoding("UTF-8");
         response.setHeader("Content-type", "application/json;charset=UTF-8");
         response.setStatus(200);

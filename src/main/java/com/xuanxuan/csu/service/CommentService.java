@@ -47,4 +47,13 @@ public interface CommentService extends Service<Comment> {
     public void deleteComment(String commentId);
 
 
+    /**
+     * 通过用户id进行点赞过滤
+     *
+     * @param commentVOList
+     * @param sessionId
+     */
+    public void commentsFilter(List<CommentVO> commentVOList, String sessionId);
+
+
 }

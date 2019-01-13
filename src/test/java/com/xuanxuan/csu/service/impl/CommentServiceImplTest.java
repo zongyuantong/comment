@@ -200,4 +200,14 @@ public class CommentServiceImplTest extends Tester {
             System.out.println(e.getMessage());
         }
     }
+
+
+    /**
+     * 测试评论点赞的过滤器
+     */
+    @Test
+    public void testCommentsFilter() {
+        
+    }
+
 }

@@ -15,12 +15,15 @@ import com.xuanxuan.csu.core.AbstractService;
 import com.xuanxuan.csu.service.ReplyService;
 import com.xuanxuan.csu.service.UserInfoService;
 import com.xuanxuan.csu.util.HotCommentStrategy;
+import com.xuanxuan.csu.vo.UserStateVO;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
@@ -44,6 +47,9 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
      */
     @Resource
     VoConvertor<CommentDetail, CommentVO> convertor;
+
+    @Resource
+    private RedisTemplate redisTemplate;
 
     @Resource
     private CommentMapper commentMapper;
@@ -99,6 +105,23 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
         replyMapper.deleteByCondition(condition);
         commentMapper.deleteByPrimaryKey(commentId);
 
+    }
+
+    @Override
+    public void commentsFilter(List<CommentVO> commentVOList, String sessionId) {
+        //判断session是否有效
+        String openId = (String) redisTemplate.opsForValue().get(sessionId);
+        if (!StringUtils.isEmpty(openId)) {
+            UserStateVO userStateVO = userInfoService.getUserState(openId);
+            //根据点赞信息,设置对应字段
+            commentVOList.forEach(commentVO -> {
+                commentVO.setIsZan(userStateVO.getCommentStarList().contains(commentVO.getId()));
+                //对评论的回复同时进行判断
+                commentVO.getReplyList().forEach(replyVO -> {
+                    replyVO.setIsZan(userStateVO.getReplyStarList().contains(replyVO.getId()));
+                });
+            });
+        }
     }
 
 

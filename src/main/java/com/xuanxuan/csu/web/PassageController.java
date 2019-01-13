@@ -5,6 +5,7 @@ import com.xuanxuan.csu.configurer.AppConfigurer;
 import com.xuanxuan.csu.core.Result;
 import com.xuanxuan.csu.core.ResultGenerator;
 import com.xuanxuan.csu.dto.RefreshDTO;
+import com.xuanxuan.csu.service.CommentService;
 import com.xuanxuan.csu.service.PassageService;
 import com.xuanxuan.csu.vo.CommentRefreshVO;
 import com.xuanxuan.csu.vo.CommentVO;
@@ -12,6 +13,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
 
@@ -23,6 +25,9 @@ import java.util.List;
 public class PassageController {
     @Resource
     private PassageService passageService;
+
+    @Resource
+    private CommentService commentService;
 
 
     /**
@@ -48,14 +53,18 @@ public class PassageController {
     @ApiOperation(value = "得到文章的详细评论信息")
     @GetMapping("/{passageId}/comments")
     public Result getComments(@RequestParam(defaultValue = "1") Integer page,
-                              @PathVariable String passageId) {
+                              @PathVariable String passageId,
+                              HttpServletRequest request) {
         if (page < 1) {
             //默认查询第一页
             page = 1;
         }
         page -= 1;
         page *= AppConfigurer.COMMENT_PAGE_SIZE;
+        //查询评论详情数据
         List<CommentVO> list = passageService.getComments(passageId, page);
+        //点赞过滤器
+        commentService.commentsFilter(list, request.getHeader("sessionId"));
         return ResultGenerator.genSuccessResult(list);
     }
 

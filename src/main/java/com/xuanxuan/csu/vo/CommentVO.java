@@ -24,6 +24,6 @@ public class CommentVO {
     private Integer zanNum;//点赞数量
     private Integer replyNum;//回复数量
     private Integer floor;//楼层
-    //一个评论有多个回复
-    private List<ReplyVO> replyList;
+    private Boolean isZan = false;//是否点赞
+    private List<ReplyVO> replyList;//一个评论有多个回复
 }
