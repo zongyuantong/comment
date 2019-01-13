@@ -23,9 +23,9 @@ public class StarServiceImplTest extends Tester {
     @Test
     public void test1() {
         StarDTO starDTO = new StarDTO();
-        starDTO.setToId("test1");
-        starDTO.setUserId("test1");
-        starDTO.setToType(1);
+        starDTO.setToId("test3");
+        starDTO.setUserId("test6");
+        starDTO.setToType(2);
         starService.zan(starDTO);
 
         try {
