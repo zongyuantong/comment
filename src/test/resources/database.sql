@@ -95,16 +95,16 @@ values ('admin', 'admin');
 #插入用户测试数据
 
 insert into user_info (id, username, avatar, gender, country, province, city, language)
-values ('test1', '天下无敌', 'www.baidu.com', 1, '中国', '湖南省', '长沙市', '中文');
+values ('test1', '天下无敌', 'https://avatars1.githubusercontent.com/u/36162683?s=460&v=4', 1, '中国', '湖南省', '长沙市', '中文');
 
 insert into user_info (id, username, avatar, gender, country, province, city, language)
-values ('test2', '智勇双全', 'www.baidu.com', 1, '中国', '湖南省', '长沙市', '中文');
+values ('test2', '智勇双全', 'https://avatars1.githubusercontent.com/u/36260787?s=460&v=4', 1, '中国', '湖南省', '长沙市', '中文');
 
 insert into user_info (id, username, avatar, gender, country, province, city, language)
-values ('test3', '文武双修', 'www.baidu.com', 1, '中国', '湖南省', '长沙市', '中文');
+values ('test3', '文武双修', 'https://avatars0.githubusercontent.com/u/7939566?s=460&v=4', 1, '中国', '湖南省', '长沙市', '中文');
 
 insert into user_info (id, username, avatar, gender, country, province, city, language)
-values ('test4', '天下无敌', 'www.baidu.com', 1, '中国', '湖南省', '长沙市', '中文');
+values ('test4', '天下无敌', 'https://avatars0.githubusercontent.com/u/9524411?s=460&v=4', 1, '中国', '湖南省', '长沙市', '中文');
 
 
 #插入文章数据
@@ -117,10 +117,10 @@ values ('test3', 'www.baidu.com', 'test3');
 
 # 插入评论数据
 insert into comment (id, passage_id, content, from_uid, create_time, star_number, reply_number, floor)
-values ('test1', 'test1', '测试评论1', 'test1', current_date, 0, 0, 1);
+values ('test1', 'test1', '测试评论1', 'test1', current_date, 0, 4, 1);
 
 insert into comment (id, passage_id, content, from_uid, create_time, star_number, reply_number, floor)
-values ('test2', 'test1', '测试评论2', 'test2', current_date, 0, 0, 2);
+values ('test2', 'test1', '测试评论2', 'test2', current_date, 0, 2, 2);
 
 insert into comment (id, passage_id, content, from_uid, create_time, star_number, reply_number, floor)
 values ('test3', 'test1', '测试评论3', 'test3', current_date, 0, 0, 3);
@@ -145,5 +145,5 @@ insert into reply (id, comment_id, reply_id, reply_type, content, from_uid, crea
 values ('rtest5', 'test1', 'rtest2', 2, '你说的有道理!', 'test2', current_date, 0);
 
 insert into reply (id, comment_id, reply_id, reply_type, content, from_uid, create_time, star_number)
-values ('rtest6', 'test2', 'rtest2', 2, '你说的有道理!', 'test3', current_date, 0);
+values ('rtest6', 'test2', 'rtest4', 2, '你说的有道理!', 'test3', current_date, 0);
 

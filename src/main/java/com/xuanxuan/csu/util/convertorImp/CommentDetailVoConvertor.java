@@ -73,7 +73,10 @@ public class CommentDetailVoConvertor implements VoConvertor<CommentDetail, Comm
             //设置时间
             replyVO.setCreateTime(dateTranStrategy.conver2Show(reply.getCreateTime()));
             //设置用户信息
-            replyVO.setFromUname(userInfoMapper.selectByPrimaryKey(replyVO.getFromUid()).getNickName());
+            UserInfo fromUser = userInfoMapper.selectByPrimaryKey(replyVO.getFromUid());
+            replyVO.setFromUname(fromUser.getNickName());
+            replyVO.setAvatar(fromUser.getAvatarUrl());
+
             //判断到底是回复评论还是回复
             if (replyVO.getReplyType() == 1) {
                 Comment target = commentMapper.selectByPrimaryKey(replyVO.getReplyId());

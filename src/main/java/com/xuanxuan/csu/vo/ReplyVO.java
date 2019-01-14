@@ -18,6 +18,7 @@ public class ReplyVO {
     private String fromUname;//所属用户name
     private String replyId;//回复的目标id
     private String toUid;//回复目标用户id
+    private String avatar;//回复用户头像
     private String toUname;//回复目标用户name
     private Integer replyType;//回复类型
     private String content;//回复内容
