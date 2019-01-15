@@ -71,7 +71,6 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
         return new LogInterceptor();
     }
 
-
     /**
      * 加载redis操作类
      */
@@ -90,10 +89,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
         FastJsonHttpMessageConverter converter = new FastJsonHttpMessageConverter();
         FastJsonConfig config = new FastJsonConfig();
-        config.setSerializerFeatures(SerializerFeature.WriteMapNullValue);//保留空的字段
-        //SerializerFeature.WriteNullStringAsEmpty, //String null -> ""
-        //SerializerFeature.WriteNullNumberAsZero//Number null -> 0
-        // 按需配置，更多参考FastJson文档哈
+        config.setSerializerFeatures(SerializerFeature.WriteMapNullValue);
         converter.setFastJsonConfig(config);
         converter.setDefaultCharset(Charset.forName("UTF-8"));
         converter.setSupportedMediaTypes(Arrays.asList(MediaType.APPLICATION_JSON_UTF8));

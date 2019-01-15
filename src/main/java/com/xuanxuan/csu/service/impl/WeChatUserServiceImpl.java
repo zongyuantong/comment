@@ -41,10 +41,10 @@ public class WeChatUserServiceImpl extends AbstractService<UserInfo> implements 
     private RedisTemplate redisTemplate;
 
     //小程序的app_id
-    private static final String appId = "wx94615bd0bc6e1d73";
+    private static final String appId = "wxf7597e992f6dbaa7";
 
     //小程序的secret_key
-    private static final String secretKey = "ec948811317899de3436e55099716e42";
+    private static final String secretKey = "00e144365d76af54a9afc4d5ae98578a";
 
     //小程序的grant_type
     private static final String grantType = "authorization_code";
