@@ -78,8 +78,10 @@ public class PassageController {
      */
     @ApiOperation(value = "刷新评论数据")
     @PostMapping("/comments/refresh")
-    public Result getNewComments(@Valid @RequestBody RefreshDTO refreshDTO) {
+    public Result getNewComments(@Valid @RequestBody RefreshDTO refreshDTO, HttpServletRequest request) {
         CommentRefreshVO commentRefreshVO = passageService.getRefreshComments(refreshDTO);
+        commentService.commentsFilter(commentRefreshVO.getNewComments(), request.getHeader("sessionId"));
+        commentService.commentsFilter(commentRefreshVO.getRefreshComments(), request.getHeader("sessionId"));
         return ResultGenerator.genSuccessResult(commentRefreshVO);
     }
 
