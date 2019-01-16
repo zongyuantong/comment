@@ -75,7 +75,7 @@ public class PassageController {
      * @apiNote 得到刷新的数据
      */
     @ApiOperation(value = "刷新评论数据")
-    @PostMapping("/comments/refresh")
+    @GetMapping("/comments/refresh")
     public Result getNewComments(@Valid @RequestBody RefreshDTO refreshDTO, HttpServletRequest request) {
         CommentRefreshVO commentRefreshVO = passageService.getRefreshComments(refreshDTO);
         commentService.commentsFilter(commentRefreshVO.getNewComments(), request.getHeader("sessionId"));
