@@ -31,10 +31,9 @@ public class PassageController {
 
 
     /**
-     * 生成文章的id,需要登陆
-     *
      * @param url
      * @return
+     * @apiNote 生成文章的id, 需要登陆
      */
     @ApiOperation(value = "申请文章接入Id")
     @PostMapping("/genOpenId")
@@ -70,11 +69,10 @@ public class PassageController {
 
 
     /**
-     * 得到刷新的数据
-     *
      * @param passageId
      * @param refreshDTO
      * @return
+     * @apiNote 得到刷新的数据
      */
     @ApiOperation(value = "刷新评论数据")
     @PostMapping("/comments/refresh")
