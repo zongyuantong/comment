@@ -59,14 +59,15 @@ public class CommentDetailVoConvertor implements VoConvertor<CommentDetail, Comm
         commentVO.setCreateTime(dateTranStrategy.conver2Show(commentDetail.getCreateTime()));
         //设置用户信息
         UserInfo userInfo = userInfoMapper.selectByPrimaryKey(commentDetail.getFromUid());
-        if (userInfo == null) throw new ServiceException("评论" + commentDetail.getId() + "所属用户不存在");
+        if (userInfo == null) {
+            userInfo = UserInfo.getDefaultUserInfo();
+        }
         commentVO.setUsername(userInfo.getNickName());
         commentVO.setAvatar(userInfo.getAvatarUrl());
         //转化回复内容进行转化
         List<ReplyVO> replyVOList = new ArrayList<>();
         //列表不为空，只可能size为0
         for (Reply reply : commentDetail.getReplyList()) {
-            //对评论进行转换
             //首先简单拷贝属性
             ReplyVO replyVO = new ReplyVO();
             BeanUtils.copyProperties(reply, replyVO);
@@ -76,7 +77,6 @@ public class CommentDetailVoConvertor implements VoConvertor<CommentDetail, Comm
             UserInfo fromUser = userInfoMapper.selectByPrimaryKey(replyVO.getFromUid());
             replyVO.setFromUname(fromUser.getNickName());
             replyVO.setAvatar(fromUser.getAvatarUrl());
-
             //判断到底是回复评论还是回复
             if (replyVO.getReplyType() == 1) {
                 Comment target = commentMapper.selectByPrimaryKey(replyVO.getReplyId());
