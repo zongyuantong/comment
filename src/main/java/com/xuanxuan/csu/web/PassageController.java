@@ -42,7 +42,6 @@ public class PassageController {
         return ResultGenerator.genSuccessResult(passageService.genOpenId(url));
     }
 
-
     /**
      * @return
      * @apiNote 页面需要评论数据接口
