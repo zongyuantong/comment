@@ -14,6 +14,7 @@ import com.xuanxuan.csu.util.DateTranStrategy;
 import com.xuanxuan.csu.util.VoConvertor;
 import com.xuanxuan.csu.vo.CommentVO;
 import com.xuanxuan.csu.vo.ReplyVO;
+import org.apache.catalina.User;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
@@ -60,7 +61,7 @@ public class CommentDetailVoConvertor implements VoConvertor<CommentDetail, Comm
         //设置用户信息
         UserInfo userInfo = userInfoMapper.selectByPrimaryKey(commentDetail.getFromUid());
         if (userInfo == null) {
-            userInfo = UserInfo.getDefaultUserInfo();
+            userInfo = UserInfo.getDefaultUserInfo();//不存在用户(脏数据),构造默认用户信息
         }
         commentVO.setUsername(userInfo.getNickName());
         commentVO.setAvatar(userInfo.getAvatarUrl());
@@ -75,6 +76,7 @@ public class CommentDetailVoConvertor implements VoConvertor<CommentDetail, Comm
             replyVO.setCreateTime(dateTranStrategy.conver2Show(reply.getCreateTime()));
             //设置用户信息
             UserInfo fromUser = userInfoMapper.selectByPrimaryKey(replyVO.getFromUid());
+            fromUser = fromUser == null ? UserInfo.getDefaultUserInfo() : fromUser;
             replyVO.setFromUname(fromUser.getNickName());
             replyVO.setAvatar(fromUser.getAvatarUrl());
             //判断到底是回复评论还是回复
