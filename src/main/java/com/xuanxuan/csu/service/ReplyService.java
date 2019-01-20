@@ -31,4 +31,12 @@ public interface ReplyService extends Service<Reply> {
     public void addNewReply(ReplyDTO replyDTO);
 
 
+    /**
+     * 删除评论
+     *
+     * @param replyId
+     */
+    public void deleteReply(String replyId);
+
+
 }

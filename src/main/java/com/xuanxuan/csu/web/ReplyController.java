@@ -46,7 +46,7 @@ public class ReplyController {
     @DeleteMapping("/{id}")
     @LoginRequired
     public Result delete(@PathVariable String id) {
-        replyService.deleteById(id);
+        replyService.deleteReply(id);
         return ResultGenerator.genSuccessResult();
     }
 }

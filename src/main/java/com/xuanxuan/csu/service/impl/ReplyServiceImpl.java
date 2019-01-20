@@ -51,9 +51,23 @@ public class ReplyServiceImpl extends AbstractService<Reply> implements ReplySer
             comment = commentMapper.selectByPrimaryKey(to_reply.getCommentId());
         }
         reply.setCommentId(comment.getId());
-        replyMapper.insert(reply);
+        replyMapper.insertSelective(reply);
         //同时,对应的评论的回复量要+1
         comment.setReplyNum(comment.getReplyNum() + 1);
+        commentMapper.updateByPrimaryKeySelective(comment);
+    }
+
+    @Override
+    public void deleteReply(String replyId) {
+        //找到回复此回复的所有回复,然后删除
+        Condition condition = new Condition(Reply.class);
+        condition.createCriteria().andCondition("reply_id=", replyId);
+        int size = replyMapper.selectCountByCondition(condition);
+        replyMapper.deleteByCondition(condition);
+        //随后对应的评论的回复数量要减少对应的数量
+        Comment comment = commentMapper.selectByPrimaryKey(replyMapper.selectByPrimaryKey(replyId).getCommentId());
+        comment.setReplyNum(comment.getReplyNum() - size >= 0 ? comment.getReplyNum() - size : 0);
+        //更新评论
         commentMapper.updateByPrimaryKeySelective(comment);
     }
 
