@@ -38,12 +38,17 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
     @Resource
     private UserInfoService userInfoService;
 
-    /**
-     * 注入do到vo的转换器
-     */
     @Resource
     private VoConvertor<CommentDetail, CommentVO> convertor;
 
+
+    /**
+     * 根据文章id得到文章的回复内容
+     *
+     * @param passageId
+     * @param page      分页的页数
+     * @return
+     */
     @Override
     public List<CommentVO> getComments(String passageId, int page) {
         List<CommentDetail> commentDetailList = commentMapper.selectCommentListByPassageId(passageId, page, AppConfigurer.COMMENT_PAGE_SIZE);
@@ -56,6 +61,12 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
         return commentVOList;
     }
 
+    /**
+     * 生成文章id(后期可以考虑开发后台管理,用来自动生成文章ID,暂时不用)
+     *
+     * @param url
+     * @return
+     */
     @Override
     public String genOpenId(String url) {
         //放入文章url,得到UUID
@@ -74,6 +85,13 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
         }
     }
 
+
+    /**
+     * 刷新起始楼层到终止楼层的所有评论内容,同时查询终止楼层以上的最新楼层
+     *
+     * @param refreshDTO
+     * @return
+     */
     @Override
     public CommentRefreshVO getRefreshComments(RefreshDTO refreshDTO) {
         //判断对应文章是否存在
@@ -107,7 +125,23 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
 
         //返回值
         return commentRefreshVO;
+    }
 
+
+    /**
+     * 检查文章id是否存在于数据库,若没有则直接创建
+     *
+     * @param passageId
+     */
+    @Override
+    public void checkPassageExist(String passageId) {
+        if (passageMapper.selectByPrimaryKey(passageId) == null) {
+            Passage passage = new Passage();
+            passage.setId(passageId);
+            passage.setUrl(AppConfigurer.DEFAULT_PASSAGE_URL);
+            passage.setPlatformId(AppConfigurer.DEFAULT_PLATFORM);
+            passageMapper.insert(passage);
+        }
     }
 
 }

@@ -44,4 +44,11 @@ public interface PassageService extends Service<Passage> {
      */
     public CommentRefreshVO getRefreshComments(RefreshDTO refreshDTO);
 
+
+    /**
+     * 检查文章id是否存在于数据库,若没有则直接创建
+     *
+     * @param passageId
+     */
+    public void checkPassageExist(String passageId);
 }

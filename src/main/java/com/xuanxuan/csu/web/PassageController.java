@@ -59,6 +59,7 @@ public class PassageController {
         }
         page -= 1;
         page *= AppConfigurer.COMMENT_PAGE_SIZE;
+        passageService.checkPassageExist(passageId);
         //查询评论详情数据
         List<CommentVO> list = passageService.getComments(passageId, page);
         //点赞过滤器
