@@ -17,7 +17,7 @@ import java.util.Date;
 public class OrdinalDateTranStrategyImpl implements DateTranStrategy {
 
     @Override
-    public String conver2Show(Date date) {
+    public String converToShow(Date date) {
         //首先得到系统当前日期
         Calendar calendar = Calendar.getInstance();
         Date now = calendar.getTime();

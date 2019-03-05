@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
+import java.util.Collection;
 import java.util.List;
 
 
@@ -59,19 +60,12 @@ public class ReplyServiceImpl extends AbstractService<Reply> implements ReplySer
 
     @Override
     public void deleteReply(String replyId) {
-        //找到回复此回复的所有回复,然后删除
-        Condition condition = new Condition(Reply.class);
-        condition.createCriteria().andCondition("reply_id=", replyId);
-        int size = replyMapper.selectCountByCondition(condition);
-        replyMapper.deleteByCondition(condition);
-        //随后删除本条
         Reply reply = replyMapper.selectByPrimaryKey(replyId);
+        //首先删除自己
         replyMapper.delete(reply);
-        //随后对应的评论的回复数量要减少对应的数量
+        //更新对应评论
         Comment comment = commentMapper.selectByPrimaryKey(reply.getCommentId());
-        comment.setReplyNum(comment.getReplyNum() - size >= 0 ? comment.getReplyNum() - size : 0);
-        //更新评论
+        comment.setReplyNum(comment.getReplyNum() - 1 > 0 ? comment.getReplyNum() - 1 : 0);
         commentMapper.updateByPrimaryKeySelective(comment);
     }
-
 }

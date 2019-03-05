@@ -6,22 +6,15 @@ import com.xuanxuan.csu.dao.PassageMapper;
 import com.xuanxuan.csu.dao.ReplyMapper;
 import com.xuanxuan.csu.dto.CommentDTO;
 import com.xuanxuan.csu.model.*;
-import com.xuanxuan.csu.service.PassageService;
 import com.xuanxuan.csu.util.VoConvertor;
 import com.xuanxuan.csu.vo.CommentVO;
-import com.xuanxuan.csu.vo.ReplyVO;
 import com.xuanxuan.csu.service.CommentService;
 import com.xuanxuan.csu.core.AbstractService;
-import com.xuanxuan.csu.service.ReplyService;
 import com.xuanxuan.csu.service.UserInfoService;
-import com.xuanxuan.csu.util.HotCommentStrategy;
 import com.xuanxuan.csu.vo.UserStateVO;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import tk.mybatis.mapper.entity.Condition;
@@ -29,7 +22,6 @@ import tk.mybatis.mapper.entity.Condition;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 
 /**
@@ -68,7 +60,7 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
     public CommentVO getCommentDetail(String commentId) {
         CommentDetail commentDetail = commentMapper.selectCommentDetailById(commentId);
         if (commentDetail == null) throw new ServiceException("评论id不存在");
-        CommentVO commentVO = convertor.conver2Vo(commentDetail);
+        CommentVO commentVO = convertor.converToVo(commentDetail);
         return commentVO;
     }
 
@@ -83,15 +75,15 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
         condition.createCriteria().andCondition("passage_id=", commentDTO.getPassageId());
         condition.orderBy("floor").desc();//最大楼层排序在最上面
         List<Comment> comments = commentMapper.selectByCondition(condition);
-
+        //判断楼层数
         if (comments.size() != 0) {
             comment.setFloor(comments.get(0).getFloor() + 1);
         } else {
             //从1楼开始
             comment.setFloor(1);
         }
+        System.out.println("待添加评论的时间:" + comment.getCreateTime());
         commentMapper.insert(comment);
-
     }
 
 
@@ -120,9 +112,7 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
             commentVOList.forEach(commentVO -> {
                 commentVO.setIsZan(userStateVO.getCommentStarList().contains(commentVO.getId()));
                 //对评论的回复同时进行判断
-                commentVO.getReplyList().forEach(replyVO -> {
-                    replyVO.setIsZan(userStateVO.getReplyStarList().contains(replyVO.getId()));
-                });
+                commentVO.getReplyList().forEach(replyVO -> replyVO.setIsZan(userStateVO.getReplyStarList().contains(replyVO.getId())));
             });
         }
     }

@@ -2,19 +2,14 @@ package com.xuanxuan.csu.util.convertorImp;
 
 import com.xuanxuan.csu.Tester;
 import com.xuanxuan.csu.dao.CommentMapper;
-import com.xuanxuan.csu.dto.CommentDTO;
-import com.xuanxuan.csu.dto.ReplyDTO;
 import com.xuanxuan.csu.model.Comment;
 import com.xuanxuan.csu.model.CommentDetail;
-import com.xuanxuan.csu.model.Passage;
-import com.xuanxuan.csu.model.UserInfo;
 import com.xuanxuan.csu.service.CommentService;
 import com.xuanxuan.csu.service.PassageService;
 import com.xuanxuan.csu.service.ReplyService;
 import com.xuanxuan.csu.service.UserInfoService;
 import com.xuanxuan.csu.util.VoConvertor;
 import com.xuanxuan.csu.vo.CommentVO;
-import org.junit.Before;
 import org.junit.Test;
 
 import javax.annotation.Resource;
@@ -62,7 +57,7 @@ public class CommentDetailVoConvertorTest extends Tester {
         List<Comment> comments = commentMapper.selectAll();
         for (Comment comment : comments) {
             CommentDetail commentDetail = commentMapper.selectCommentDetailById(comment.getId());
-            CommentVO commentVO = convertor.conver2Vo(commentDetail);
+            CommentVO commentVO = convertor.converToVo(commentDetail);
             System.out.println(commentVO);
         }
     }

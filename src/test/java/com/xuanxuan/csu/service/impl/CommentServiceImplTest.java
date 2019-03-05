@@ -24,6 +24,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.junit.Assert.*;
 
@@ -108,6 +109,20 @@ public class CommentServiceImplTest extends Tester {
         //若文章没有回复
 
     }
+
+
+    /**
+     * 测试评论日期格式
+     */
+    @Test
+    public void testCommentPropoties() {
+        CommentDTO commentDTO = new CommentDTO();
+        commentDTO.setFromUid("test1");
+        commentDTO.setPassageId("test1");
+        commentDTO.setContent("测试评论的日期格式");
+        commentService.addNewComment(commentDTO);
+    }
+
 
     /**
      * 测试删除评论

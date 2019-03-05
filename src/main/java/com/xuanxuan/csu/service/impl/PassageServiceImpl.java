@@ -6,10 +6,8 @@ import com.xuanxuan.csu.core.ServiceException;
 import com.xuanxuan.csu.dao.CommentMapper;
 import com.xuanxuan.csu.dao.PassageMapper;
 import com.xuanxuan.csu.dto.RefreshDTO;
-import com.xuanxuan.csu.model.Comment;
 import com.xuanxuan.csu.model.CommentDetail;
 import com.xuanxuan.csu.model.Passage;
-import com.xuanxuan.csu.service.CommentService;
 import com.xuanxuan.csu.service.PassageService;
 import com.xuanxuan.csu.core.AbstractService;
 import com.xuanxuan.csu.service.UserInfoService;
@@ -53,11 +51,10 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
         commentDetailList.forEach(commentDetail -> {
             commentDetail.setReplyList(commentDetail.getReplyList().
                     subList(0, Math.min(AppConfigurer.COMMENT_REPLAY_NUMBER, commentDetail.getReplyList().size())));
-            commentVOList.add(convertor.conver2Vo(commentDetail));
+            commentVOList.add(convertor.converToVo(commentDetail));
         });
         return commentVOList;
     }
-
 
     @Override
     public String genOpenId(String url) {
@@ -98,18 +95,14 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
         ConditionMap conditionMap = new ConditionMap(refreshDTO);
         conditionMap.removeCondition("startFloor");
         List<CommentDetail> newCommentDetailList = commentMapper.selectCommentListByCondition(conditionMap.getConditionMap());
-        newCommentDetailList.forEach(commentDetail -> {
-            newCommentVOList.add(convertor.conver2Vo(commentDetail));
-        });
+        newCommentDetailList.forEach(commentDetail -> newCommentVOList.add(convertor.converToVo(commentDetail)));
         commentRefreshVO.setAddNum(newCommentVOList.size());
         commentRefreshVO.setNewComments(newCommentVOList);
 
         /**2. 重新加载刷新已经加载过的评论(start to end)*/
         conditionMap.addCondition("startFloor", refreshDTO.getStartFloor());
         List<CommentDetail> refreshCommentDetailList = commentMapper.selectCommentListByCondition(conditionMap.getConditionMap());
-        refreshCommentDetailList.forEach(refreshCommentDetail -> {
-            refreshCommentVOList.add(convertor.conver2Vo(refreshCommentDetail));
-        });
+        refreshCommentDetailList.forEach(refreshCommentDetail -> refreshCommentVOList.add(convertor.converToVo(refreshCommentDetail)));
         commentRefreshVO.setRefreshComments(refreshCommentVOList);
 
         //返回值

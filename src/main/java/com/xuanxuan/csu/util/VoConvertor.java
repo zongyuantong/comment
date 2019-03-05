@@ -8,5 +8,5 @@ package com.xuanxuan.csu.util;
  */
 public interface VoConvertor<T, V> {
 
-    public V conver2Vo(T model);
+    public V converToVo(T model);
 }
