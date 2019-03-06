@@ -14,4 +14,11 @@
         <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
         <result column="star_number" jdbcType="INTEGER" property="zanNum"/>
     </resultMap>
+
+    <delete id="batchDeleteReplys" parameterType="java.util.List">
+        delete from mpdb_pl.reply where id in
+        <foreach collection="list" index="index" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
 </mapper>

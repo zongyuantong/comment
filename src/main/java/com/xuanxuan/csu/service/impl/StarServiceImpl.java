@@ -53,6 +53,7 @@ public class StarServiceImpl extends AbstractService<UserStar> implements StarSe
         condition.createCriteria().andCondition("to_id=", starDTO.getToId()).
                 andCondition("user_id=", starDTO.getUserId());
         List<UserStar> userStarList = userStarMapper.selectByCondition(condition);
+
         //如果已经存在,对前端抛出提示
         if (userStarList.size() != 0) {
             throw new ServiceException("你已经点过赞了");

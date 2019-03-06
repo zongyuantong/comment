@@ -56,6 +56,11 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
     private PassageMapper passageMapper;
 
 
+    /**
+     * 根据评论id得到评论信息以及所有的复回复信息详情
+     *
+     * @param commentId 评论id
+     */
     @Override
     public CommentVO getCommentDetail(String commentId) {
         CommentDetail commentDetail = commentMapper.selectCommentDetailById(commentId);
@@ -64,7 +69,11 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
         return commentVO;
     }
 
-
+    /**
+     * 增加一条新的评论
+     *
+     * @param commentDTO 评论数据出传输对象
+     */
     @Override
     public void addNewComment(CommentDTO commentDTO) {
         //首先转化为model对象
@@ -86,7 +95,47 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
         commentMapper.insert(comment);
     }
 
+    /**
+     * 更新一条评论信息
+     *
+     * @param commentDTO
+     */
+    @Override
+    public void updateComment(CommentDTO commentDTO) {
+        //查询是否存在此评论
+        Comment comment = commentMapper.selectByPrimaryKey(commentDTO.getCommentId());
+        if (comment == null) throw new ServiceException("评论id错误");
 
+        if (!comment.getPassageId().equals(commentDTO.getPassageId())) throw new ServiceException("文章id错误");
+
+        if (!comment.getFromUid().equals(commentDTO.getFromUid())) throw new ServiceException("所属用户id错误");
+
+        //进行保存
+        comment.setContent(commentDTO.getContent());
+        commentMapper.updateByPrimaryKey(comment);
+
+    }
+
+
+    /**
+     * 重载方法,对单个进行点赞过滤
+     *
+     * @param commentVO
+     * @param sessionId
+     */
+    @Override
+    public void commentsFilter(CommentVO commentVO, String sessionId) {
+        List<CommentVO> commentVOList = new ArrayList<>();
+        commentVOList.add(commentVO);
+        commentsFilter(commentVOList, sessionId);
+    }
+
+
+    /**
+     * 删除一条评论
+     *
+     * @param commentId
+     */
     @Override
     public void deleteComment(String commentId) {
         Comment comment = commentMapper.selectByPrimaryKey(commentId);
@@ -96,9 +145,14 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
         condition.createCriteria().andCondition("comment_id=", commentId);
         replyMapper.deleteByCondition(condition);
         commentMapper.deleteByPrimaryKey(commentId);
-
     }
 
+    /**
+     * 通过用户id进行点赞过滤
+     *
+     * @param commentVOList
+     * @param sessionId
+     */
     @Override
     public void commentsFilter(List<CommentVO> commentVOList, String sessionId) {
         //判断session是否有效
@@ -115,29 +169,5 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
                 commentVO.getReplyList().forEach(replyVO -> replyVO.setIsZan(userStateVO.getReplyStarList().contains(replyVO.getId())));
             });
         }
-    }
-
-    @Override
-    public void commentsFilter(CommentVO commentVO, String sessionId) {
-        List<CommentVO> commentVOList = new ArrayList<>();
-        commentVOList.add(commentVO);
-        commentsFilter(commentVOList, sessionId);
-    }
-
-
-    @Override
-    public void updateComment(CommentDTO commentDTO) {
-        //查询是否存在此评论
-        Comment comment = commentMapper.selectByPrimaryKey(commentDTO.getCommentId());
-        if (comment == null) throw new ServiceException("评论id错误");
-
-        if (!comment.getPassageId().equals(commentDTO.getPassageId())) throw new ServiceException("文章id错误");
-
-        if (!comment.getFromUid().equals(commentDTO.getFromUid())) throw new ServiceException("所属用户id错误");
-
-        //进行保存
-        comment.setContent(commentDTO.getContent());
-        commentMapper.updateByPrimaryKey(comment);
-
     }
 }

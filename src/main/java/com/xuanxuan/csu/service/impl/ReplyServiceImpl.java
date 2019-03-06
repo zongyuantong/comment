@@ -15,8 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
 /**
@@ -31,6 +30,13 @@ public class ReplyServiceImpl extends AbstractService<Reply> implements ReplySer
     @Resource
     private CommentMapper commentMapper;
 
+
+    /**
+     * 得到根据评论id 得到的回复(时间排序)
+     *
+     * @param commentId
+     * @return
+     */
     @Override
     public List<Reply> findReplyByCommentId(String commentId) {
         Condition condition = new Condition(Reply.class);
@@ -39,6 +45,11 @@ public class ReplyServiceImpl extends AbstractService<Reply> implements ReplySer
         return replyMapper.selectByCondition(condition);
     }
 
+    /**
+     * 添加新的回复
+     *
+     * @param replyDTO
+     */
     @Override
     public void addNewReply(ReplyDTO replyDTO) {
         Reply reply = new Reply();
@@ -58,14 +69,45 @@ public class ReplyServiceImpl extends AbstractService<Reply> implements ReplySer
         commentMapper.updateByPrimaryKeySelective(comment);
     }
 
+    /**
+     * 删除评论
+     *
+     * @param replyId
+     */
     @Override
     public void deleteReply(String replyId) {
         Reply reply = replyMapper.selectByPrimaryKey(replyId);
-        //首先删除自己
-        replyMapper.delete(reply);
-        //更新对应评论
+        if (reply == null) {
+            return;
+        }
+        List<Reply> replyList = findReplyByCommentId(reply.getCommentId());
+        //批量主键删除
+        replyMapper.batchDeleteReplys(this.findReplysToDelete(reply, replyList));
+        replyList.forEach(reply1 -> replyMapper.delete(reply1));
+        //更新comment
         Comment comment = commentMapper.selectByPrimaryKey(reply.getCommentId());
         comment.setReplyNum(comment.getReplyNum() - 1 > 0 ? comment.getReplyNum() - 1 : 0);
         commentMapper.updateByPrimaryKeySelective(comment);
+
     }
+
+    /**
+     * 查找算法
+     *
+     * @param target
+     * @param replyList
+     * @return
+     */
+    private List<String> findReplysToDelete(Reply target, List<Reply> replyList) {
+        List<String> targetList = new ArrayList<>();//目标集合,reply_id = replyid;
+        targetList.add(target.getId());
+        replyList.forEach(reply -> {
+            //递归
+            if (reply.getReplyId() == target.getId()) {
+                targetList.addAll(findReplysToDelete(reply, replyList));
+            }
+        });
+        return targetList;
+    }
+
 }

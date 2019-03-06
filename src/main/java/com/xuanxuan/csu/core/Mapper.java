@@ -3,6 +3,7 @@ package com.xuanxuan.csu.core;
 import tk.mybatis.mapper.common.BaseMapper;
 import tk.mybatis.mapper.common.ConditionMapper;
 import tk.mybatis.mapper.common.IdsMapper;
+import tk.mybatis.mapper.common.base.delete.DeleteMapper;
 import tk.mybatis.mapper.common.base.select.SelectMapper;
 import tk.mybatis.mapper.common.special.InsertListMapper;
 
@@ -16,6 +17,6 @@ public interface Mapper<T>
         ConditionMapper<T>,
         IdsMapper<T>,
         InsertListMapper<T>,
-        SelectMapper<T> {
+        SelectMapper<T>, DeleteMapper<T> {
 //    在此添加新的共有拓展方法(如排序)
 }
