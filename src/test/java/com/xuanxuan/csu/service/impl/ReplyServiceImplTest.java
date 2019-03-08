@@ -2,7 +2,6 @@ package com.xuanxuan.csu.service.impl;
 
 import com.xuanxuan.csu.Tester;
 import com.xuanxuan.csu.dto.ReplyDTO;
-import com.xuanxuan.csu.model.Comment;
 import com.xuanxuan.csu.model.Reply;
 import com.xuanxuan.csu.service.CommentService;
 import com.xuanxuan.csu.service.ReplyService;
@@ -11,7 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class ReplyServiceImplTest extends Tester {
 

@@ -3,9 +3,6 @@
 <mapper namespace="com.xuanxuan.csu.dao.CommentMapper">
     <!--评论的基本实体-->
     <resultMap id="BaseResultMap" type="com.xuanxuan.csu.model.Comment">
-        <!--
-          WARNING - @mbg.generated
-        -->
         <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="passage_id" jdbcType="VARCHAR" property="passageId"/>
         <result column="content" jdbcType="VARCHAR" property="content"/>
@@ -49,7 +46,7 @@
             r.from_uid    r_from_uid,
             r.create_time r_create_time,
             r.star_number r_star_number
-        from comment c
+        from mpdb_pl.comment c
         left outer join reply r on c.id = r.comment_id
         where c.id = #{id}
         order by r.create_time;
@@ -66,7 +63,7 @@
                r.from_uid    r_from_uid,
                r.create_time r_create_time,
                r.star_number r_star_number
-        from (select * from comment order by floor desc limit #{page},#{size}) as c
+        from (select * from mpdb_pl.comment order by floor desc limit #{page},#{size}) as c
                left outer join reply as r
                                on c.id = r.comment_id
         where c.passage_id = #{id}

@@ -1,32 +1,24 @@
 package com.xuanxuan.csu.service.impl;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.xuanxuan.csu.Tester;
 import com.xuanxuan.csu.core.ServiceException;
 import com.xuanxuan.csu.dto.CommentDTO;
 import com.xuanxuan.csu.dto.ReplyDTO;
 import com.xuanxuan.csu.model.Comment;
-import com.xuanxuan.csu.model.Passage;
 import com.xuanxuan.csu.model.Reply;
-import com.xuanxuan.csu.model.UserInfo;
 import com.xuanxuan.csu.service.CommentService;
 import com.xuanxuan.csu.service.PassageService;
 import com.xuanxuan.csu.service.ReplyService;
 import com.xuanxuan.csu.service.UserInfoService;
 import com.xuanxuan.csu.vo.CommentVO;
-import org.junit.Before;
 import org.junit.Test;
 
 import javax.annotation.Resource;
-import javax.servlet.ServletContainerInitializer;
-
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class CommentServiceImplTest extends Tester {
 
@@ -121,6 +113,7 @@ public class CommentServiceImplTest extends Tester {
         commentDTO.setPassageId("test1");
         commentDTO.setContent("测试评论的日期格式");
         commentService.addNewComment(commentDTO);
+        System.out.println(commentService.findAll());
     }
 
 
@@ -151,7 +144,6 @@ public class CommentServiceImplTest extends Tester {
         } catch (ServiceException e) {
             System.out.println(e.getMessage());
         }
-
 
         //对评论进行回复
         ReplyDTO replyDTO = new ReplyDTO();
