@@ -9,3 +9,6 @@
 
 ##### 开发日志
 1. 2018/12/25 完成了评论模块的重构
+
+##### 小程序前端工程导航:
+https://github.com/PualrDwade/CSUYLG-frontend.git
