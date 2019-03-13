@@ -2,16 +2,15 @@ package com.xuanxuan.csu.service.impl;
 
 import com.xuanxuan.csu.Tester;
 import com.xuanxuan.csu.dto.ReplyDTO;
+import com.xuanxuan.csu.model.Comment;
 import com.xuanxuan.csu.model.Reply;
 import com.xuanxuan.csu.service.CommentService;
 import com.xuanxuan.csu.service.ReplyService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotEquals;
 
 public class ReplyServiceImplTest extends Tester {
 
@@ -23,7 +22,7 @@ public class ReplyServiceImplTest extends Tester {
 
     @Test
     public void testFindReplyByCommentId() {
-        assertNotNull(replyService.findReplyByCommentId("test1"));
+        assertNotEquals(0, replyService.findReplyByCommentId("test1"));
     }
 
     /**
@@ -48,8 +47,9 @@ public class ReplyServiceImplTest extends Tester {
      */
     @Test
     public void testDeleteReply() {
-        List<Reply> replyList = replyService.findReplyByCommentId("test1");
-        replyList.forEach(reply -> replyService.deleteReply(reply.getId()));
-        assertEquals(0, replyService.findReplyByCommentId("test1").size());
+        Reply reply = replyService.findById("rtest1");
+        Comment comment = commentService.findById(reply.getCommentId());
+        replyService.deleteReply("rtest1");
+        assertEquals(1, replyService.findReplyByCommentId(comment.getId()).size());
     }
 }

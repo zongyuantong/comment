@@ -2,7 +2,10 @@ package com.xuanxuan.csu.model;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Date;
 
 
@@ -23,6 +26,6 @@ public class UserStar {
     private String userId;
 
     @Column(name = "create_time")
-    private Date create_time = new Date();
+    private Date createTime = new Date();
 
 }

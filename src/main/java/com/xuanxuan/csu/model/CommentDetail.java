@@ -2,14 +2,9 @@ package com.xuanxuan.csu.model;
 
 
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +22,7 @@ public class CommentDetail {
     private String content;//评论内容
     @Column(name = "from_uid")
     private String fromUid;
-    @Column(name = "createTime")
+    @Column(name = "create_time")
     private Date createTime;//创建时间
     @Column(name = "star_number")
     private Integer zanNum;//点赞数量

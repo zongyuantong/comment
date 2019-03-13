@@ -1,21 +1,20 @@
 package com.xuanxuan.csu.service.impl;
 
-import com.xuanxuan.csu.core.ServiceException;
+import com.xuanxuan.csu.core.AbstractService;
 import com.xuanxuan.csu.dao.CommentMapper;
 import com.xuanxuan.csu.dao.ReplyMapper;
 import com.xuanxuan.csu.dto.ReplyDTO;
 import com.xuanxuan.csu.model.Comment;
 import com.xuanxuan.csu.model.Reply;
-import com.xuanxuan.csu.service.CommentService;
 import com.xuanxuan.csu.service.ReplyService;
-import com.xuanxuan.csu.core.AbstractService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -77,16 +76,18 @@ public class ReplyServiceImpl extends AbstractService<Reply> implements ReplySer
     @Override
     public void deleteReply(String replyId) {
         Reply reply = replyMapper.selectByPrimaryKey(replyId);
+        System.out.println(replyId);
         if (reply == null) {
             return;
         }
         List<Reply> replyList = findReplyByCommentId(reply.getCommentId());
+        List<String> deleteList = this.findReplysToDelete(reply, replyList);
+        System.out.println("deleteList:" + deleteList);
         //批量主键删除
-        replyMapper.batchDeleteReplys(this.findReplysToDelete(reply, replyList));
-        replyList.forEach(reply1 -> replyMapper.delete(reply1));
+        replyMapper.batchDeleteReplys(deleteList);
         //更新comment
         Comment comment = commentMapper.selectByPrimaryKey(reply.getCommentId());
-        comment.setReplyNum(comment.getReplyNum() - 1 > 0 ? comment.getReplyNum() - 1 : 0);
+        comment.setReplyNum(comment.getReplyNum() - deleteList.size() > 0 ? comment.getReplyNum() - deleteList.size() : 0);
         commentMapper.updateByPrimaryKeySelective(comment);
 
     }
@@ -99,11 +100,13 @@ public class ReplyServiceImpl extends AbstractService<Reply> implements ReplySer
      * @return
      */
     private List<String> findReplysToDelete(Reply target, List<Reply> replyList) {
+        System.out.println("replyList:" + replyList);
+        System.out.println("target:" + target);
         List<String> targetList = new ArrayList<>();//目标集合,reply_id = replyid;
         targetList.add(target.getId());
         replyList.forEach(reply -> {
             //递归
-            if (reply.getReplyId() == target.getId()) {
+            if (reply.getReplyId().equals(target.getId())) {
                 targetList.addAll(findReplysToDelete(reply, replyList));
             }
         });
