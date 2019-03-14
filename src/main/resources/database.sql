@@ -103,7 +103,7 @@ values ('test3', 'www.baidu.com', 'test3');
 
 # 插入评论数据
 insert into comment (id, passage_id, content, from_uid, create_time, star_number, reply_number, floor)
-values ('test1', 'test1', '测试评论1', 'test1', current_timestamp, 0, 5, 1);
+values ('test1', 'test1', '测试评论1', 'test1', current_timestamp, 0, 6, 1);
 
 insert into comment (id, passage_id, content, from_uid, create_time, star_number, reply_number, floor)
 values ('test2', 'test1', '测试评论2', 'test2', current_timestamp, 0, 2, 2);
@@ -135,3 +135,7 @@ values ('rtest6', 'test2', 'rtest4', 2, '你说的有道理!', 'test3', current_
 
 insert into reply (id, comment_id, reply_id, reply_type, content, from_uid, create_time, star_number)
 values ('rtest7', 'test1', 'rtest2', 2, '云麓谷越做越好!!', 'test3', current_timestamp, 0);
+
+insert into reply (id, comment_id, reply_id, reply_type, content, from_uid, create_time, star_number)
+values ('rtest8', 'test1', 'test1', 1, '云麓谷越做越好!!', 'test3', current_timestamp, 0);
+
