@@ -3,15 +3,15 @@ package com.xuanxuan.csu.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.xuanxuan.csu.configurer.AppConfigurer;
+import com.xuanxuan.csu.core.AbstractService;
 import com.xuanxuan.csu.core.ServiceException;
 import com.xuanxuan.csu.dao.UserInfoMapper;
-import com.xuanxuan.csu.dao.UserStarMapper;
 import com.xuanxuan.csu.dto.UserDTO;
 import com.xuanxuan.csu.model.UserInfo;
 import com.xuanxuan.csu.model.UserStar;
 import com.xuanxuan.csu.service.StarService;
 import com.xuanxuan.csu.service.UserInfoService;
-import com.xuanxuan.csu.core.AbstractService;
+import com.xuanxuan.csu.util.CommonUtil;
 import com.xuanxuan.csu.vo.UserStateVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -86,7 +86,9 @@ public class WeChatUserServiceImpl extends AbstractService<UserInfo> implements 
 
     @Override
     public void auth(UserDTO userDTO) {
+        //unicode编码
         //对前端传来的用户信息进行校验
+        userDTO.setNickName(CommonUtil.unicode(userDTO.getNickName()));
         if (validData(userDTO, "xxxxx")) {
             //判断用户是否已经存在,如果存在就更新,不存在则创建
             UserInfo userInfo = userInfoMapper.selectByPrimaryKey(userDTO.getId());

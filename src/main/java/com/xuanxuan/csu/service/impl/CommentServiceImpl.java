@@ -1,16 +1,19 @@
 package com.xuanxuan.csu.service.impl;
 
+import com.xuanxuan.csu.core.AbstractService;
 import com.xuanxuan.csu.core.ServiceException;
 import com.xuanxuan.csu.dao.CommentMapper;
 import com.xuanxuan.csu.dao.PassageMapper;
 import com.xuanxuan.csu.dao.ReplyMapper;
 import com.xuanxuan.csu.dto.CommentDTO;
-import com.xuanxuan.csu.model.*;
+import com.xuanxuan.csu.model.Comment;
+import com.xuanxuan.csu.model.CommentDetail;
+import com.xuanxuan.csu.model.Reply;
+import com.xuanxuan.csu.service.CommentService;
+import com.xuanxuan.csu.service.UserInfoService;
+import com.xuanxuan.csu.util.CommonUtil;
 import com.xuanxuan.csu.util.VoConvertor;
 import com.xuanxuan.csu.vo.CommentVO;
-import com.xuanxuan.csu.service.CommentService;
-import com.xuanxuan.csu.core.AbstractService;
-import com.xuanxuan.csu.service.UserInfoService;
 import com.xuanxuan.csu.vo.UserStateVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -76,6 +79,7 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
      */
     @Override
     public void addNewComment(CommentDTO commentDTO) {
+        commentDTO.setContent(CommonUtil.unicode(commentDTO.getContent()));
         //首先转化为model对象
         Comment comment = new Comment();
         BeanUtils.copyProperties(commentDTO, comment);

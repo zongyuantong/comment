@@ -1,26 +1,14 @@
 package com.xuanxuan.csu.configurer;
 
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Resource;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-
 import com.xuanxuan.csu.configurer.interceptor.LogInterceptor;
+import com.xuanxuan.csu.configurer.interceptor.SessionIdInterceptor;
+import com.xuanxuan.csu.configurer.interceptor.TokenInterceptor;
 import com.xuanxuan.csu.core.Result;
 import com.xuanxuan.csu.core.ResultCode;
 import com.xuanxuan.csu.core.ServiceException;
-import com.xuanxuan.csu.configurer.interceptor.SessionIdInterceptor;
-import com.xuanxuan.csu.configurer.interceptor.TokenInterceptor;
 import com.xuanxuan.csu.util.CommonUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +27,13 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletResponse;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author PualrDwade
@@ -81,8 +76,6 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
 
     @Value("${spring.profiles.active}")
     private String env;//当前激活的配置文件
-
-    private CommonUtil commonUtil = new CommonUtil();
 
     //使用阿里 FastJson 作为JSON MessageConverter
     @Override
@@ -182,7 +175,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
      * @param result
      */
     private void responseResult(HttpServletResponse response, Result result) {
-        commonUtil.responseResult(response, result);
+        CommonUtil.responseResult(response, result);
     }
 
 

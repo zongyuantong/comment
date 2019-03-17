@@ -8,6 +8,7 @@ import com.xuanxuan.csu.model.Comment;
 import com.xuanxuan.csu.model.CommentDetail;
 import com.xuanxuan.csu.model.Reply;
 import com.xuanxuan.csu.model.UserInfo;
+import com.xuanxuan.csu.util.CommonUtil;
 import com.xuanxuan.csu.util.DateTranStrategy;
 import com.xuanxuan.csu.util.VoConvertor;
 import com.xuanxuan.csu.vo.CommentVO;
@@ -53,6 +54,7 @@ public class CommentDetailVoConvertor implements VoConvertor<CommentDetail, Comm
         //首先将属性进行拷贝
         if (commentDetail == null) return null;
         CommentVO commentVO = new CommentVO();
+        commentVO.setContent(CommonUtil.decodeUnicode(commentDetail.getContent()));
         BeanUtils.copyProperties(commentDetail, commentVO);
         commentVO.setCreateTime(dateTranStrategy.converToShow(commentDetail.getCreateTime()));
         //设置用户信息
@@ -69,6 +71,8 @@ public class CommentDetailVoConvertor implements VoConvertor<CommentDetail, Comm
             //首先简单拷贝属性
             ReplyVO replyVO = new ReplyVO();
             BeanUtils.copyProperties(reply, replyVO);
+            //解码content
+            replyVO.setContent(CommonUtil.decodeUnicode(replyVO.getContent()));
             //设置时间
             replyVO.setCreateTime(dateTranStrategy.converToShow(reply.getCreateTime()));
             //设置用户信息
@@ -79,11 +83,13 @@ public class CommentDetailVoConvertor implements VoConvertor<CommentDetail, Comm
             //判断到底是回复评论还是回复
             if (replyVO.getReplyType() == 1) {
                 Comment target = commentMapper.selectByPrimaryKey(replyVO.getReplyId());
-                replyVO.setToUname(userInfoMapper.selectByPrimaryKey(target.getFromUid()).getNickName());
+                UserInfo temp = userInfoMapper.selectByPrimaryKey(target.getFromUid());
+                replyVO.setToUname(temp != null ? temp.getNickName() : "云麓学子");
                 replyVO.setToUid(target.getFromUid());
             } else {
                 Reply target = replyMapper.selectByPrimaryKey(replyVO.getReplyId());
-                replyVO.setToUname(userInfoMapper.selectByPrimaryKey(target.getFromUid()).getNickName());
+                UserInfo temp = userInfoMapper.selectByPrimaryKey(target.getFromUid());
+                replyVO.setToUname(temp != null ? temp.getNickName() : "云麓学子");
                 replyVO.setToUid(target.getFromUid());
             }
             replyVOList.add(replyVO);
