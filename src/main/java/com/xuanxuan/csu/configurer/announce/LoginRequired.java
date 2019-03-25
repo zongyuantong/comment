@@ -8,8 +8,10 @@ import java.lang.annotation.Target;
 
 /**
  * 登陆注解拦截器,在方法上加入此注解则会被拦截
- * *
- * * 在需要登录验证的Controller的方法上使用此注解
+ * 在需要登录验证的Controller的方法上使用此注解
+ *
+ * @author PualrDwade
+ * @create 2018-12-10
  */
 
 @Target({ElementType.METHOD})// 可用在方法名上

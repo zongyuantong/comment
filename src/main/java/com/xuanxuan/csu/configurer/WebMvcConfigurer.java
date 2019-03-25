@@ -5,7 +5,6 @@ import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
 import com.xuanxuan.csu.configurer.interceptor.LogInterceptor;
 import com.xuanxuan.csu.configurer.interceptor.SessionIdInterceptor;
-import com.xuanxuan.csu.configurer.interceptor.TokenInterceptor;
 import com.xuanxuan.csu.core.Result;
 import com.xuanxuan.csu.core.ResultCode;
 import com.xuanxuan.csu.core.ServiceException;
@@ -30,7 +29,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 import javax.annotation.Resource;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.List;
@@ -42,40 +40,23 @@ import java.util.List;
 @Configuration
 public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
 
-    /**
-     * 注入login拦截器的bean
-     */
     @Bean
     SessionIdInterceptor sessionIdInterceptor() {
         return new SessionIdInterceptor();
     }
 
-    /**
-     * 注入jwt拦截器的bean
-     */
-    @Bean
-    TokenInterceptor tokenInterceptor() {
-        return new TokenInterceptor();
-    }
-
-    /**
-     * 注入日志拦截器的bean
-     */
     @Bean
     LogInterceptor logInterceptor() {
         return new LogInterceptor();
     }
 
-    /**
-     * 加载redis操作类
-     */
     @Resource
     RedisTemplate redisTemplate;
 
     private final Logger logger = LoggerFactory.getLogger(WebMvcConfigurer.class);
 
     @Value("${spring.profiles.active}")
-    private String env;//当前激活的配置文件
+    private String env;//当前激活的环境
 
     //使用阿里 FastJson 作为JSON MessageConverter
     @Override
@@ -121,7 +102,7 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
                 }
                 logger.error(message, e);
             }
-            responseResult(response, result);
+            CommonUtil.responseResult(response, result);
             return new ModelAndView();
         });
     }
@@ -142,41 +123,21 @@ public class WebMvcConfigurer extends WebMvcConfigurerAdapter {
         if (!"dev".equals(env)) { //开发环境忽略签名认证
             //1. 添加登陆验证拦截器
             registry.addInterceptor(sessionIdInterceptor());
-            // 2. 添加jwt验证拦截器
-            registry.addInterceptor(tokenInterceptor());
         }
         //添加日志记录
         registry.addInterceptor(logInterceptor());
 
     }
 
-    /**
-     * 添加swagger进行api测试与项目合作
-     *
-     * @param registry
-     */
+    //添加swagger进行api测试与项目合作
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        //生产,测试环境不使用swagger
-        if (!"prod".equals(env) && !"test".equals(env)) {
+        //生产环境不使用swagger
+        if (!"prod".equals(env)) {
             registry.addResourceHandler("swagger-ui.html")
                     .addResourceLocations("classpath:/META-INF/resources/");
-
             registry.addResourceHandler("/webjars/**")
                     .addResourceLocations("classpath:/META-INF/resources/webjars/");
         }
     }
-
-
-    /**
-     * 统一生成响应请求
-     *
-     * @param response
-     * @param result
-     */
-    private void responseResult(HttpServletResponse response, Result result) {
-        CommonUtil.responseResult(response, result);
-    }
-
-
 }

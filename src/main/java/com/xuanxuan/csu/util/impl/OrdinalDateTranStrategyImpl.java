@@ -22,7 +22,6 @@ public class OrdinalDateTranStrategyImpl implements DateTranStrategy {
         record.setTime(date);
         //得到系统当前日期
         Calendar now = Calendar.getInstance();
-        System.out.println(record == now);
         //进行判断
         if (record.get(Calendar.YEAR) == now.get(Calendar.YEAR)) {
             //如果是同一年

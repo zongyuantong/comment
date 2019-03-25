@@ -1,7 +1,6 @@
 package com.xuanxuan.csu.configurer;
 
 import com.github.pagehelper.PageHelper;
-import com.xuanxuan.csu.core.ProjectConstant;
 import org.apache.ibatis.plugin.Interceptor;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -25,7 +24,7 @@ public class MybatisConfigurer {
     public SqlSessionFactory sqlSessionFactoryBean(DataSource dataSource) throws Exception {
         SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
         factory.setDataSource(dataSource);
-        factory.setTypeAliasesPackage(ProjectConstant.MODEL_PACKAGE);
+        factory.setTypeAliasesPackage(AppConfigurer.MODEL_PACKAGE);
 
         //配置分页插件，详情请查阅官方文档
         PageHelper pageHelper = new PageHelper();
@@ -48,11 +47,11 @@ public class MybatisConfigurer {
     public MapperScannerConfigurer mapperScannerConfigurer() {
         MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
         mapperScannerConfigurer.setSqlSessionFactoryBeanName("sqlSessionFactoryBean");
-        mapperScannerConfigurer.setBasePackage(ProjectConstant.MAPPER_PACKAGE);
+        mapperScannerConfigurer.setBasePackage(AppConfigurer.MAPPER_PACKAGE);
 
         //配置通用Mapper，详情请查阅官方文档
         Properties properties = new Properties();
-        properties.setProperty("mappers", ProjectConstant.MAPPER_INTERFACE_REFERENCE);
+        properties.setProperty("mappers", AppConfigurer.MAPPER_INTERFACE_REFERENCE);
         properties.setProperty("notEmpty", "false");//insert、update是否判断字符串类型!='' 即 test="str != null"表达式内是否追加 and str != ''
         properties.setProperty("IDENTITY", "MYSQL");
         mapperScannerConfigurer.setProperties(properties);

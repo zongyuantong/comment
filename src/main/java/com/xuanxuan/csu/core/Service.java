@@ -3,7 +3,6 @@ package com.xuanxuan.csu.core;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import tk.mybatis.mapper.entity.Condition;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
