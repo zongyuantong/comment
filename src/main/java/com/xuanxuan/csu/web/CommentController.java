@@ -12,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by PualrDwade on 2018/12/03.
@@ -35,7 +33,7 @@ public class CommentController {
     @ApiOperation(value = "添加文章新评论")
     @PostMapping
     @LoginRequired
-    public Result add(@Valid @RequestBody CommentDTO commentDTO) {
+    public Result addComment(@Valid @RequestBody CommentDTO commentDTO) {
         commentService.addNewComment(commentDTO);
         return ResultGenerator.genSuccessResult();
     }

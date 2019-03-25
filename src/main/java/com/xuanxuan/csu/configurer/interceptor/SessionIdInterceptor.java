@@ -2,17 +2,15 @@ package com.xuanxuan.csu.configurer.interceptor;
 
 
 import com.alibaba.fastjson.JSON;
-import com.xuanxuan.csu.configurer.announce.LoginRequired;
 import com.xuanxuan.csu.configurer.AppConfigurer;
 import com.xuanxuan.csu.configurer.WebMvcConfigurer;
+import com.xuanxuan.csu.configurer.announce.LoginRequired;
 import com.xuanxuan.csu.core.Result;
 import com.xuanxuan.csu.core.ResultCode;
 import com.xuanxuan.csu.util.CommonUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.ApplicationContext;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
@@ -21,7 +19,6 @@ import org.springframework.web.servlet.HandlerInterceptor;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 

@@ -7,6 +7,7 @@ import com.xuanxuan.csu.dto.ReplyDTO;
 import com.xuanxuan.csu.model.Comment;
 import com.xuanxuan.csu.model.Reply;
 import com.xuanxuan.csu.service.ReplyService;
+import com.xuanxuan.csu.util.CommonUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +54,8 @@ public class ReplyServiceImpl extends AbstractService<Reply> implements ReplySer
     public void addNewReply(ReplyDTO replyDTO) {
         Reply reply = new Reply();
         BeanUtils.copyProperties(replyDTO, reply);
+        // 编码为unicode
+        reply.setContent(CommonUtil.unicode(replyDTO.getContent()));
         //得到对应的评论
         Comment comment = null;
         if (replyDTO.getReplyType() == 1) {

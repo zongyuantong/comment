@@ -2,7 +2,9 @@ package com.xuanxuan.csu.model;
 
 import lombok.Data;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Data
 @Table(name = "passage")
