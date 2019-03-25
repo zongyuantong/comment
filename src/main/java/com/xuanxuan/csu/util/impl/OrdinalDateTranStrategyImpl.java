@@ -18,17 +18,14 @@ public class OrdinalDateTranStrategyImpl implements DateTranStrategy {
 
     @Override
     public String converToShow(Date date) {
+        //得到记录的时间
         Calendar record = Calendar.getInstance();
         record.setTime(date);
         //得到系统当前日期
         Calendar now = Calendar.getInstance();
-        //进行判断
         if (record.get(Calendar.YEAR) == now.get(Calendar.YEAR)) {
-            //如果是同一年
             if (now.get(Calendar.MONTH) == record.get(Calendar.MONTH)) {
-                //是同一个月
                 if (now.get(Calendar.DAY_OF_MONTH) == record.get(Calendar.DAY_OF_MONTH)) {
-                    //是今天
                     SimpleDateFormat dateFormat = new SimpleDateFormat("今天HH:mm");
                     return dateFormat.format(date);
                 }
@@ -40,7 +37,6 @@ public class OrdinalDateTranStrategyImpl implements DateTranStrategy {
                 }
                 now.add(Calendar.DAY_OF_MONTH, -1);//再后退一天
                 if (now.get(Calendar.DAY_OF_MONTH) == record.get(Calendar.DAY_OF_MONTH)) {
-                    //是前天
                     SimpleDateFormat dateFormat = new SimpleDateFormat("前天HH:mm");
                     return dateFormat.format(date);
                 } else {
