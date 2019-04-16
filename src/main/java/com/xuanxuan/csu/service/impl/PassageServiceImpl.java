@@ -53,9 +53,7 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
      */
     @Override
     public List<CommentVO> getComments(String passageId, int page) {
-        System.out.println("查询文章" + passageId + "第" + page + "条评论:");
         List<CommentDetail> commentDetailList = commentMapper.selectCommentListByPassageId(passageId, page, AppConfigurer.COMMENT_PAGE_SIZE);
-        System.out.println(commentDetailList);
         List<CommentVO> commentVOList = new ArrayList<>();
         commentDetailList.forEach(commentDetail -> {
             commentDetail.setReplyList(commentDetail.getReplyList().
