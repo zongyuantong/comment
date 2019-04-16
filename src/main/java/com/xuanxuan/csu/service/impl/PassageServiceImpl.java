@@ -1,6 +1,7 @@
 package com.xuanxuan.csu.service.impl;
 
 import com.xuanxuan.csu.configurer.AppConfigurer;
+import com.xuanxuan.csu.core.AbstractService;
 import com.xuanxuan.csu.core.ConditionMap;
 import com.xuanxuan.csu.core.ServiceException;
 import com.xuanxuan.csu.dao.CommentMapper;
@@ -9,7 +10,6 @@ import com.xuanxuan.csu.dto.RefreshDTO;
 import com.xuanxuan.csu.model.CommentDetail;
 import com.xuanxuan.csu.model.Passage;
 import com.xuanxuan.csu.service.PassageService;
-import com.xuanxuan.csu.core.AbstractService;
 import com.xuanxuan.csu.service.UserInfoService;
 import com.xuanxuan.csu.util.VoConvertor;
 import com.xuanxuan.csu.vo.CommentRefreshVO;
@@ -19,7 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Condition;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 
 /**
@@ -51,7 +53,9 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
      */
     @Override
     public List<CommentVO> getComments(String passageId, int page) {
+        System.out.println("查询文章" + passageId + "第" + page + "条评论:");
         List<CommentDetail> commentDetailList = commentMapper.selectCommentListByPassageId(passageId, page, AppConfigurer.COMMENT_PAGE_SIZE);
+        System.out.println(commentDetailList);
         List<CommentVO> commentVOList = new ArrayList<>();
         commentDetailList.forEach(commentDetail -> {
             commentDetail.setReplyList(commentDetail.getReplyList().
@@ -107,8 +111,6 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
         List<CommentVO> refreshCommentVOList = new ArrayList<>();
         //存储刷新的响应实体
         CommentRefreshVO commentRefreshVO = new CommentRefreshVO();
-
-
         /**1. 刷新得到最新的数据(end->max)*/
         ConditionMap conditionMap = new ConditionMap(refreshDTO);
         conditionMap.removeCondition("startFloor");
@@ -122,8 +124,6 @@ public class PassageServiceImpl extends AbstractService<Passage> implements Pass
         List<CommentDetail> refreshCommentDetailList = commentMapper.selectCommentListByCondition(conditionMap.getConditionMap());
         refreshCommentDetailList.forEach(refreshCommentDetail -> refreshCommentVOList.add(convertor.converToVo(refreshCommentDetail)));
         commentRefreshVO.setRefreshComments(refreshCommentVOList);
-
-        //返回值
         return commentRefreshVO;
     }
 

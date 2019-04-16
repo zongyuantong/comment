@@ -9,15 +9,10 @@ import com.xuanxuan.csu.service.PassageService;
 import com.xuanxuan.csu.service.UserInfoService;
 import com.xuanxuan.csu.vo.CommentRefreshVO;
 import com.xuanxuan.csu.vo.CommentVO;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
-
 import java.util.List;
-
-import static org.junit.Assert.*;
 
 public class PassageServiceImplTest extends Tester {
 

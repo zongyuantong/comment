@@ -25,7 +25,7 @@ public interface CommentMapper extends Mapper<Comment> {
      * @param passageId
      * @return
      */
-    public List<CommentDetail> selectCommentListByPassageId(@Param("id") String passageId,
+    public List<CommentDetail> selectCommentListByPassageId(@Param("passageId") String passageId,
                                                             @Param("page") int page,
                                                             @Param("size") int size);
 

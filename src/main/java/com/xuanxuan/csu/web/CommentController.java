@@ -22,7 +22,6 @@ public class CommentController {
     @Resource
     private CommentService commentService;
 
-
     /**
      * 添加新评论
      *

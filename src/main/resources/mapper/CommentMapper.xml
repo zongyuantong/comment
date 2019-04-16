@@ -47,7 +47,7 @@
             r.create_time r_create_time,
             r.star_number r_star_number
         from mpdb_pl.comment c
-        left outer join reply r on c.id = r.comment_id
+        left outer join mpdb_pl.reply r on c.id = r.comment_id
         where c.id = #{id}
         order by r.create_time;
     </select>
@@ -63,11 +63,14 @@
                r.from_uid    r_from_uid,
                r.create_time r_create_time,
                r.star_number r_star_number
-        from (select * from mpdb_pl.comment order by floor desc limit #{page},#{size}) as c
-               left outer join reply as r
-                               on c.id = r.comment_id
-        where c.passage_id = #{id}
-        order by c.floor desc, r.create_time;
+        from
+        (select * from mpdb_pl.comment)  c
+        left outer join
+        (select * from mpdb_pl.reply order by create_time)  r
+        on r.comment_id = c.id
+        where c.passage_id = #{passageId}
+        order by c.floor desc
+        limit #{page},#{size};
     </select>
 
     <!--高级查询，通过condition条件拼接查询-->

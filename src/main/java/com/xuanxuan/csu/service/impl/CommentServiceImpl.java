@@ -79,9 +79,7 @@ public class CommentServiceImpl extends AbstractService<Comment> implements Comm
      */
     @Override
     public void addNewComment(CommentDTO commentDTO) {
-        System.out.println("传入的content:" + commentDTO.getContent());
         commentDTO.setContent(CommonUtil.unicode(commentDTO.getContent()));
-        System.out.println("转码的content:" + commentDTO.getContent());
         //首先转化为model对象
         Comment comment = new Comment();
         BeanUtils.copyProperties(commentDTO, comment);
